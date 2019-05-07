@@ -59,9 +59,9 @@ public class MiscSetup {
 			}
 		}
 		
-		List<SlimefunItem> pre = new ArrayList<SlimefunItem>();
-		List<SlimefunItem> init = new ArrayList<SlimefunItem>();
-		List<SlimefunItem> post = new ArrayList<SlimefunItem>();
+		List<SlimefunItem> pre = new ArrayList<>();
+		List<SlimefunItem> init = new ArrayList<>();
+		List<SlimefunItem> post = new ArrayList<>();
 		
 		for (SlimefunItem item: SlimefunItem.list()) {
 			if (item instanceof Alloy || item instanceof ReplacingAlloy) pre.add(item);
@@ -102,7 +102,7 @@ public class MiscSetup {
 //				}
 //			}
 			
-			for (ItemStack[] inputs: RecipeType.getRecipeInputList((SlimefunMachine) SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE"))) {
+			for (ItemStack[] inputs: RecipeType.getRecipeInputList(SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE"))) {
 				StringBuilder builder = new StringBuilder();
 				int i = 0;
 				for (ItemStack item: inputs) {
@@ -115,7 +115,7 @@ public class MiscSetup {
 					i++;
 				}
 				
-				AutomatedCraftingChamber.recipes.put(builder.toString(), RecipeType.getRecipeOutputList((SlimefunMachine) SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE"), inputs));
+				AutomatedCraftingChamber.recipes.put(builder.toString(), RecipeType.getRecipeOutputList(SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE"), inputs));
 			}
 			
 		}
@@ -148,6 +148,25 @@ public class MiscSetup {
 			}
 		}
 
+		setupSmeltery();
+		
+		CommandSender sender = Bukkit.getConsoleSender();
+		ChatColor color = Colors.getRandom();
+		
+		for (PostSlimefunLoadingHandler handler: post_handlers) {
+			handler.run(pre, init, post);
+		}
+		
+		sender.sendMessage(color + "###################### - Slimefun - ######################");
+		sender.sendMessage(color + "Successfully loaded " + SlimefunItem.list().size() + " Items (" + Research.list().size() + " Researches)");
+		sender.sendMessage(color + "( " + SlimefunItem.vanilla + " Items from Slimefun, " + (SlimefunItem.list().size() - SlimefunItem.vanilla) + " Items from Addons )");
+		sender.sendMessage(color + "##########################################################");
+		SlimefunStartup.getItemCfg().save();
+		SlimefunStartup.getResearchCfg().save();
+		SlimefunStartup.getWhitelist().save();
+	}
+
+	private static void setupSmeltery(){
 		SlimefunItem smeltery = SlimefunItem.getByID("SMELTERY");
 		if (smeltery != null) {
 			ItemStack[] input = null;
@@ -171,8 +190,9 @@ public class MiscSetup {
 								if (SlimefunManager.isItemSimiliar(i, SlimefunItems.ZINC_DUST, true)) dust = true;
 							}
 						}
-						
+
 						if (dust && inputs.size() == 1) {
+							//continue;
 							// Dust -> Ingot Recipe, we want to exclude those
 						}
 						else {
@@ -183,21 +203,6 @@ public class MiscSetup {
 				}
 			}
 		}
-		
-		CommandSender sender = Bukkit.getConsoleSender();
-		ChatColor color = Colors.getRandom();
-		
-		for (PostSlimefunLoadingHandler handler: post_handlers) {
-			handler.run(pre, init, post);
-		}
-		
-		sender.sendMessage(color + "###################### - Slimefun - ######################");
-		sender.sendMessage(color + "Successfully loaded " + SlimefunItem.list().size() + " Items (" + Research.list().size() + " Researches)");
-		sender.sendMessage(color + "( " + SlimefunItem.vanilla + " Items from Slimefun, " + (SlimefunItem.list().size() - SlimefunItem.vanilla) + " Items from Addons )");
-		sender.sendMessage(color + "##########################################################");
-		SlimefunStartup.getItemCfg().save();
-		SlimefunStartup.getResearchCfg().save();
-		SlimefunStartup.getWhitelist().save();
 	}
 
 	public static void setupItemSettings() {
