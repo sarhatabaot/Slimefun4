@@ -247,6 +247,8 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 			
 			i++;
 		}
+
+		System.out.println("[Slimefun]{TEMP: AUTOCRAFTCHAMBER, RECIPE=}"+builder.toString());
 		
 		String input = builder.toString();
 		
