@@ -231,30 +231,19 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 		if (ChargableBlock.getCharge(b) < getEnergyConsumption()) return;
 		
 		BlockMenu menu = BlockStorage.getInventory(b);
-		
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
-		for (int j = 0; j < 9; j++) {
-			if (i > 0) {
-				builder.append(" </slot> ");
-			}
-			
-			ItemStack item = menu.getItemInSlot(getInputSlots()[j]);
-			
-			if (item != null && item.getAmount() == 1) return;
-			
-			builder.append(CustomItemSerializer.serialize(item, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL));
-			
-			i++;
-		}
+		String input = getSerializedRecipe(menu);
 
-		System.out.println("[Slimefun]{TEMP: AUTOCRAFTCHAMBER, RECIPE=}"+builder.toString());
-		
-		String input = builder.toString();
-		
+		if(input == null) return;
+
+		System.out.println("Input:"+input);
+
+		printRecipeList(RecipeType.getRecipeInputList(SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE")));
+		printRecipeMap();
+
 		if (recipes.containsKey(input)) {
 			ItemStack output = recipes.get(input).clone();
-			
+
+			System.out.println(output.getItemMeta().getDisplayName());
 			if (fits(b, new ItemStack[] {output})) {
 				pushItems(b, new ItemStack[] {output});
 				ChargableBlock.addCharge(b, -getEnergyConsumption());
@@ -265,4 +254,55 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 		}
 	}
 
+	private void printRecipeMap(){
+		String BOLD_RED = "\u001b[1m \u001b[31m";
+		String RESET = "\u001b[0m";
+		for(Map.Entry<String,ItemStack> entry:recipes.entrySet()){
+			System.out.println(BOLD_RED+entry.getValue()+RESET);
+			System.out.println(entry.getKey());
+			System.out.println(BOLD_RED+"===="+RESET);
+		}
+	}
+
+	private void printRecipeList(List<ItemStack[]> recipeInputList ){
+		String BOLD_RED = "\u001b[1m \u001b[31m";
+		String RESET = "\u001b[0m";
+		for (ItemStack[] stack: recipeInputList){
+			System.out.println("==");
+			printItemStackArray(stack);
+		}
+		System.out.println(BOLD_RED+"END OF PRINT RECIPE LIST: Local="+recipeInputList.size()+"Automated="+recipes.entrySet().size()+RESET);
+
+	}
+
+	private void printItemStackArray(ItemStack[] array){
+		String GREEN = "\u001b[32m";
+		String RESET = "\u001b[0m";
+		System.out.print("[");
+		for(ItemStack item: array){
+			System.out.print(CustomItemSerializer.serialize(item, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL)+" , ");
+		}
+		System.out.print("]");
+		ItemStack output = RecipeType.getRecipeOutputList(SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE"),array);
+		System.out.println(GREEN+CustomItemSerializer.serialize(output, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL)+RESET);
+	}
+
+	private String getSerializedRecipe(BlockMenu menu){
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for (int j = 0; j < 9; j++) {
+			if (i > 0) {
+				builder.append(" </slot> ");
+			}
+
+			ItemStack item = menu.getItemInSlot(getInputSlots()[j]);
+
+			if (item != null && item.getAmount() == 1) return null;
+
+			builder.append(CustomItemSerializer.serialize(item, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL));
+
+			i++;
+		}
+		return builder.toString();
+	}
 }
