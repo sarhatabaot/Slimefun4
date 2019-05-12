@@ -36,16 +36,16 @@ import org.bukkit.inventory.ItemStack;
 
 public class SlimefunItem {
 	
-	public static List<SlimefunItem> items = new ArrayList<SlimefunItem>();
+	public static List<SlimefunItem> items = new ArrayList<>();
 	
-	public static Map<String, URID> map_id = new HashMap<String, URID>();
-	public static List<ItemStack> radioactive = new ArrayList<ItemStack>();
+	public static Map<String, URID> map_id = new HashMap<>();
+	public static List<ItemStack> radioactive = new ArrayList<>();
 	public static int vanilla = 0;
-	public static Set<String> tickers = new HashSet<String>();
+	public static Set<String> tickers = new HashSet<>();
 	
-	public static List<SlimefunItem> all = new ArrayList<SlimefunItem>();
-	public static Map<String, Set<ItemHandler>> handlers = new HashMap<String, Set<ItemHandler>>();
-	public static Map<String, SlimefunBlockHandler> blockhandler = new HashMap<String, SlimefunBlockHandler>();
+	public static List<SlimefunItem> all = new ArrayList<>();
+	public static Map<String, Set<ItemHandler>> handlers = new HashMap<>();
+	public static Map<String, SlimefunBlockHandler> blockhandler = new HashMap<>();
 
 	private String id;
 	private URID urid;
@@ -63,7 +63,7 @@ public class SlimefunItem {
 	private boolean replacing = false;
 	private boolean addon = false;
 	private String permission = "";
-	private Set<ItemHandler> itemhandlers = new HashSet<ItemHandler>();
+	private Set<ItemHandler> itemhandlers = new HashSet<>();
 	private boolean ticking = false;
 	private BlockTicker blockTicker;
 	private EnergyTicker energyTicker;
