@@ -89,6 +89,10 @@ public class Talisman extends SlimefunItem {
         }
 
         Player p = getPlayerByEventType(e);
+        if(p == null){
+            return false;
+        }
+
         if (!pass(p, talisman)) {
             return false;
         }
