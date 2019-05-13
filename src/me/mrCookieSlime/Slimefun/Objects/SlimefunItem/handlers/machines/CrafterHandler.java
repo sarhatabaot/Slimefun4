@@ -178,11 +178,5 @@ public abstract class CrafterHandler extends MultiBlockInteractionHandler {
      */
     abstract Dispenser getRelativeDispenser(Block block);
 
-    /**
-     *
-     * @return String machineID
-     */
-    abstract String getMachineID();
-
     abstract void removeItemsFromDispenser(Inventory inventory);
 }
