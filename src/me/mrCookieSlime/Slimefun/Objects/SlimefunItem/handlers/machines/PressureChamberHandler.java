@@ -24,6 +24,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class PressureChamberHandler extends MultiBlockInteractionHandler {
     @Override
+    public String getMachineID() {
+        return "PRESSURE_CHAMBER";
+    }
+
+    @Override
     public boolean onInteract(final Player p, MultiBlock mb, final Block b) {
 
         SlimefunMachine machine = (SlimefunMachine) SlimefunItem.getByID("PRESSURE_CHAMBER");

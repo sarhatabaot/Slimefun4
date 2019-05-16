@@ -28,6 +28,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class SmelteryHandler extends MultiBlockInteractionHandler {
+    @Override
+    public String getMachineID() {
+        return "SMELTERY";
+    }
+
     private boolean isCraft(Inventory inventory, ItemStack[] itemStacks){
         for (ItemStack converting : itemStacks) {
             if (converting != null) {
