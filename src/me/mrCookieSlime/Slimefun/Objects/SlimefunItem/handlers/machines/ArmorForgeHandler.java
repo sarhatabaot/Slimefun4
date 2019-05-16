@@ -22,9 +22,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-/**
- * @author sarhatabaot
- */
 public class ArmorForgeHandler extends MultiBlockInteractionHandler {
     private boolean isCraft(Inventory inventory, ItemStack[] inputs){
         for (int j = 0; j < inventory.getContents().length; j++) {
@@ -34,6 +31,12 @@ public class ArmorForgeHandler extends MultiBlockInteractionHandler {
         }
         return true;
     }
+
+    @Override
+    public String getMachineID() {
+        return "ARMOR_FORGE";
+    }
+
     @Override
     public boolean onInteract(final Player p, MultiBlock mb, Block b) {
 
