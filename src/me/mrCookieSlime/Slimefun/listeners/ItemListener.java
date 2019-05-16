@@ -245,7 +245,7 @@ public class ItemListener implements Listener {
 			if (e.getClickedBlock() != null && BlockStorage.hasBlockInfo(e.getClickedBlock())) {
 				String id = BlockStorage.checkID(e.getClickedBlock());
 				if (BlockMenuPreset.isInventory(id)) {
-					if (canPlaceBlock(p, e.getClickedBlock().getRelative(e.getParentEvent().getBlockFace())) && SlimefunManager.isItemSimiliar(item, SlimefunItems.CARGO_INPUT, true));
+					if (canPlaceBlock(p, e.getClickedBlock().getRelative(e.getParentEvent().getBlockFace())) && SlimefunManager.isItemSimiliar(item, SlimefunItems.CARGO_INPUT, true)); //do nothing
 					else if (canPlaceBlock(p, e.getClickedBlock().getRelative(e.getParentEvent().getBlockFace())) && SlimefunManager.isItemSimiliar(item, SlimefunItems.CARGO_OUTPUT, true));
 					else if (canPlaceBlock(p, e.getClickedBlock().getRelative(e.getParentEvent().getBlockFace())) && SlimefunManager.isItemSimiliar(item, SlimefunItems.CARGO_OUTPUT_ADVANCED, true));
 					else if (canPlaceBlock(p, e.getClickedBlock().getRelative(e.getParentEvent().getBlockFace())) && SlimefunManager.isItemSimiliar(item, SlimefunItems.CT_IMPORT_BUS, true));
