@@ -90,9 +90,9 @@ public abstract class CrafterHandler extends MultiBlockInteractionHandler {
 
             String backpackID = saveUpgradedBackpack(backpack,size);
 
-            if (backpackID.isEmpty()) { //create a new backpack
+            if (backpackID.isEmpty()) {
                 createNewBackpack(player,size,adding);
-            } else { //update upgraded backpack meta
+            } else {
                 updateUpgradedBackpack(adding,backpackID);
             }
         }
