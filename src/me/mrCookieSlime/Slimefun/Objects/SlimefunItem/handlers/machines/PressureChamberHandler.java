@@ -21,9 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * @author sarhatabaot
- */
+
 public class PressureChamberHandler extends MultiBlockInteractionHandler {
     @Override
     public boolean onInteract(final Player p, MultiBlock mb, final Block b) {
