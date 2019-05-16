@@ -15,37 +15,25 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
 public class Pedestals {
 
-	public static List<AltarRecipe> recipes = new ArrayList<AltarRecipe>();
+	public static List<AltarRecipe> recipes = new ArrayList<>();
 
 	public static List<Block> getPedestals(Block altar) {
-		List<Block> list = new ArrayList<Block>();
-
-		if (BlockStorage.check(altar.getRelative(3, 0, 0), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(3, 0, 0));
-		}
-		if (BlockStorage.check(altar.getRelative(-3, 0, 0), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(-3, 0, 0));
-		}
-		if (BlockStorage.check(altar.getRelative(0, 0, 3), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(0, 0, 3));
-		}
-		if (BlockStorage.check(altar.getRelative(0, 0, -3), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(0, 0, -3));
-		}
-		if (BlockStorage.check(altar.getRelative(2, 0, 2), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(2, 0, 2));
-		}
-		if (BlockStorage.check(altar.getRelative(2, 0, -2), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(2, 0, -2));
-		}
-		if (BlockStorage.check(altar.getRelative(-2, 0, 2), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(-2, 0, 2));
-		}
-		if (BlockStorage.check(altar.getRelative(-2, 0, -2), "ANCIENT_PEDESTAL")) {
-			list.add(altar.getRelative(-2, 0, -2));
-		}
-
+		List<Block> list = new ArrayList<>();
+		addRelativeBlock(list,altar,3,0,0);
+		addRelativeBlock(list,altar,-3,0,0);
+		addRelativeBlock(list,altar,0,0,3);
+		addRelativeBlock(list,altar,0,0,-3);
+		addRelativeBlock(list,altar,2,0,2);
+		addRelativeBlock(list,altar,2,0,-2);
+		addRelativeBlock(list,altar,-2,0,2);
+		addRelativeBlock(list,altar,-2,0,-2);
 		return list;
+	}
+
+	private static void addRelativeBlock(List<Block> list, Block altar, int i, int i1, int i2){
+		if(BlockStorage.check(altar.getRelative(i,i1,i2),"ANCIENT_PEDESTAL")){
+			list.add(altar.getRelative(i,i1,i2));
+		}
 	}
 
 	public static ItemStack getRecipeOutput(ItemStack catalyst, List<ItemStack> input) {
@@ -63,37 +51,37 @@ public class Pedestals {
 	}
 
 	private static ItemStack checkRecipe(ItemStack catalyst, List<ItemStack> input) {
-        AltarRecipe r = null;
+        AltarRecipe r;
 		for (AltarRecipe recipe : recipes) {
 			if (SlimefunManager.isItemSimiliar(catalyst, recipe.getCatalyst(), true)) {
-				r = recipe;
-				
-				List<ItemStack> copy = new ArrayList<ItemStack>(input);
-				
-				recipe:
-				for (ItemStack item : recipe.getInput()) {
-					Iterator<ItemStack> iterator = copy.iterator();
-					boolean match = false;
-					
-					items:
-					while (iterator.hasNext()) {
-						ItemStack altar_item = iterator.next();
-						if (SlimefunManager.isItemSimiliar(altar_item, item, true)) {
-							match = true;
-							iterator.remove();
-							break items;
-						}
-					}
-					
-					if (!match) {
-						r = null;
-						break recipe;
-					}
-				}
-
+				List<ItemStack> copy = new ArrayList<>(input);
+				r = getRecipe(copy,recipe);
 				if (r != null) return r.getOutput();
 			}
 		}
         return null;
+	}
+
+	private static boolean isMatch(Iterator<ItemStack> iterator,ItemStack item){
+		while (iterator.hasNext()) {
+			ItemStack altar_item = iterator.next();
+			if (SlimefunManager.isItemSimiliar(altar_item, item, true)) {
+				iterator.remove();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static AltarRecipe getRecipe(List<ItemStack> copy,AltarRecipe recipe){
+		AltarRecipe r  = recipe;
+		for (ItemStack item : recipe.getInput()) {
+			Iterator<ItemStack> iterator = copy.iterator();
+
+			if (!isMatch(iterator,item)) {
+				r = null;
+			}
+		}
+		return r;
 	}
 }
