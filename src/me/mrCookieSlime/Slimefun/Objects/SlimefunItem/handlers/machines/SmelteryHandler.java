@@ -27,10 +27,33 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-/**
- * @author sarhatabaot
- */
 public class SmelteryHandler extends MultiBlockInteractionHandler {
+    private boolean isCraft(Inventory inventory, ItemStack[] itemStacks){
+        for (ItemStack converting : itemStacks) {
+            if (converting != null) {
+                for (int j = 0; j < inventory.getContents().length; j++) {
+                    if (j == (inventory.getContents().length - 1) && !SlimefunManager.isItemSimiliar(converting, inventory.getContents()[j], true, SlimefunManager.DataType.ALWAYS)) {
+                        return false;
+                    } else if (SlimefunManager.isItemSimiliar(inventory.getContents()[j], converting, true, SlimefunManager.DataType.ALWAYS))
+                       return true;
+                }
+            }
+        }
+        return true;
+    }
+
+    private Hopper getIgnitionChamber(Block raw_disp){
+        if (BlockStorage.check(raw_disp.getRelative(BlockFace.EAST).getState().getBlock(), "IGNITION_CHAMBER")) {
+            return (Hopper) raw_disp.getRelative(BlockFace.EAST).getState();
+        } else if (BlockStorage.check(raw_disp.getRelative(BlockFace.WEST).getState().getBlock(), "IGNITION_CHAMBER")) {
+            return (Hopper) raw_disp.getRelative(BlockFace.WEST).getState();
+        } else if (BlockStorage.check(raw_disp.getRelative(BlockFace.NORTH).getState().getBlock(), "IGNITION_CHAMBER")) {
+            return (Hopper) raw_disp.getRelative(BlockFace.NORTH).getState();
+        } else if (BlockStorage.check(raw_disp.getRelative(BlockFace.SOUTH).getState().getBlock(), "IGNITION_CHAMBER")) {
+            return (Hopper) raw_disp.getRelative(BlockFace.SOUTH).getState();
+        }
+        return null;
+    }
     @Override
     public boolean onInteract(Player p, MultiBlock mb, Block b) {
         SlimefunMachine machine = (SlimefunMachine) SlimefunItem.getByID("SMELTERY");
@@ -45,41 +68,18 @@ public class SmelteryHandler extends MultiBlockInteractionHandler {
                 Inventory inv = disp.getInventory();
                 List<ItemStack[]> inputs = RecipeType.getRecipeInputList(machine);
 
-                for (int i = 0; i < inputs.size(); i++) {
-                    boolean craft = true;
-                    for (ItemStack converting : inputs.get(i)) {
-                        if (converting != null) {
-                            for (int j = 0; j < inv.getContents().length; j++) {
-                                if (j == (inv.getContents().length - 1) && !SlimefunManager.isItemSimiliar(converting, inv.getContents()[j], true, SlimefunManager.DataType.ALWAYS)) {
-                                    craft = false;
-                                    break;
-                                } else if (SlimefunManager.isItemSimiliar(inv.getContents()[j], converting, true, SlimefunManager.DataType.ALWAYS))
-                                    break;
-                            }
-                        }
-                    }
-
-                    if (craft) {
-                        ItemStack adding = RecipeType.getRecipeOutputList(machine, inputs.get(i)).clone();
+                for (ItemStack[] stacks:inputs) {
+                    if (isCraft(inv,stacks)) {
+                        ItemStack adding = RecipeType.getRecipeOutputList(machine, stacks).clone();
                         if (Slimefun.hasUnlocked(p, adding, true)) {
                             if (InvUtils.fits(inv, adding)) {
-                                for (ItemStack removing : inputs.get(i)) {
+                                for (ItemStack removing : stacks) {
                                     if (removing != null) inv.removeItem(removing);
                                 }
                                 inv.addItem(adding);
                                 p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_POP, 1, 1);
                                 p.getWorld().playEffect(b.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
-                                Block raw_disp = b.getRelative(BlockFace.DOWN);
-                                Hopper chamber = null;
-                                if (BlockStorage.check(raw_disp.getRelative(BlockFace.EAST).getState().getBlock(), "IGNITION_CHAMBER")) {
-                                    chamber = (Hopper) raw_disp.getRelative(BlockFace.EAST).getState();
-                                } else if (BlockStorage.check(raw_disp.getRelative(BlockFace.WEST).getState().getBlock(), "IGNITION_CHAMBER")) {
-                                    chamber = (Hopper) raw_disp.getRelative(BlockFace.WEST).getState();
-                                } else if (BlockStorage.check(raw_disp.getRelative(BlockFace.NORTH).getState().getBlock(), "IGNITION_CHAMBER")) {
-                                    chamber = (Hopper) raw_disp.getRelative(BlockFace.NORTH).getState();
-                                } else if (BlockStorage.check(raw_disp.getRelative(BlockFace.SOUTH).getState().getBlock(), "IGNITION_CHAMBER")) {
-                                    chamber = (Hopper) raw_disp.getRelative(BlockFace.SOUTH).getState();
-                                }
+                                Hopper chamber = getIgnitionChamber(b.getRelative(BlockFace.DOWN));
 
                                 if (SlimefunStartup.chance(100, (Integer) Slimefun.getItemValue("SMELTERY", "chance.fireBreak"))) {
                                     if (chamber != null) {
