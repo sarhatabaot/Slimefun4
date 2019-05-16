@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class MagicWorkbenchHandler extends CrafterHandler {
     @Override
-    String getMachineID() {
+    public String getMachineID() {
         return "MAGIC_WORKBENCH";
     }
 
