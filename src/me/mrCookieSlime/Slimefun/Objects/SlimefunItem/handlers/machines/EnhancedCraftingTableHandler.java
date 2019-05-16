@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class EnhancedCraftingTableHandler extends CrafterHandler {
     @Override
-    String getMachineID() {
+    public String getMachineID() {
         return "ENHANCED_CRAFTING_TABLE";
     }
 
