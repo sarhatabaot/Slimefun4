@@ -1,4 +1,4 @@
-package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.handlers.items;
+package me.mrCookieSlime.Slimefun.Objects.SlimefunItem.handlers.machines;
 
 import me.mrCookieSlime.CSCoreLibPlugin.CSCoreLib;
 import me.mrCookieSlime.CSCoreLibPlugin.compatibility.MaterialHelper;
@@ -6,6 +6,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.events.ItemUseEvent;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.handlers.ItemInteractionHandler;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.handlers.MachineID;
 import me.mrCookieSlime.Slimefun.Setup.Messages;
 import me.mrCookieSlime.Slimefun.Setup.SlimefunManager;
 import me.mrCookieSlime.Slimefun.SlimefunStartup;
@@ -19,7 +20,12 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CrucibleHandler extends ItemInteractionHandler {
+public class CrucibleHandler extends ItemInteractionHandler implements MachineID {
+    @Override
+    public String getMachineID() {
+        return "CRUCIBLE";
+    }
+
     @Override
     public boolean onRightClick(ItemUseEvent e, final Player p, ItemStack item) {
         if (e.getClickedBlock() != null) {

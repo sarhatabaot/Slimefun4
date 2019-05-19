@@ -36,10 +36,10 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
 public abstract class AContainer extends SlimefunItem {
 	
-	public static Map<Block, MachineRecipe> processing = new HashMap<Block, MachineRecipe>();
-	public static Map<Block, Integer> progress = new HashMap<Block, Integer>();
+	public static Map<Block, MachineRecipe> processing = new HashMap<>();
+	public static Map<Block, Integer> progress = new HashMap<>();
 	
-	protected List<MachineRecipe> recipes = new ArrayList<MachineRecipe>();
+	protected List<MachineRecipe> recipes = new ArrayList<>();
 	
 	private static final int[] border = {0, 1, 2, 3, 4, 5, 6, 7, 8, 13, 31, 36, 37, 38, 39, 40, 41, 42, 43, 44};
 	private static final int[] border_in = {9, 10, 11, 12, 18, 21, 27, 28, 29, 30};
@@ -286,7 +286,7 @@ public abstract class AContainer extends SlimefunItem {
 				ItemMeta im = item.getItemMeta();
 				((Damageable) im).setDamage(MachineHelper.getDurability(item, timeleft, processing.get(b).getTicks()));
 				im.setDisplayName(" ");
-				List<String> lore = new ArrayList<String>();
+				List<String> lore = new ArrayList<>();
 				lore.add(MachineHelper.getProgress(timeleft, processing.get(b).getTicks()));
 				lore.add("");
 				lore.add(MachineHelper.getTimeLeft(timeleft / 2));
@@ -312,7 +312,7 @@ public abstract class AContainer extends SlimefunItem {
 		}
 		else {
 			MachineRecipe r = null;
-			Map<Integer, Integer> found = new HashMap<Integer, Integer>();
+			Map<Integer, Integer> found = new HashMap<>();
 			outer:
 			for (MachineRecipe recipe: recipes) {
 				for (ItemStack input: recipe.getInput()) {

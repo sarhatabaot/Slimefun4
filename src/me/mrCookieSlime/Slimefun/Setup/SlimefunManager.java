@@ -70,12 +70,10 @@ public class SlimefunManager {
 		return isItemSimiliar(item, SFitem, lore, DataType.IF_COLORED);
 	}
 	
-	public static enum DataType {
-		
+	public enum DataType {
 		ALWAYS,
 		NEVER,
-		IF_COLORED;
-		
+		IF_COLORED
 	}
 
 	public static boolean isItemSimiliar(ItemStack item, ItemStack SFitem, boolean lore, DataType data) {

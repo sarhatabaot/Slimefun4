@@ -14,18 +14,18 @@ import org.bukkit.inventory.ItemStack;
 
 public class RitualAnimation implements Runnable {
 
-	List<Block> altars;
+	private List<Block> altars;
 
-	Block altar;
-	Location l;
-	ItemStack output;
-	List<Block> pedestals;
-	List<ItemStack> items;
+	private Block altar;
+	private Location l;
+	private ItemStack output;
+	private List<Block> pedestals;
+	private List<ItemStack> items;
 
-	List<Location> particles;
+	private List<Location> particles;
 
-	boolean running;
-	int stage;
+	private boolean running;
+	private int stage;
 
 	public RitualAnimation(List<Block> altars, Block altar, Location drop, ItemStack output, List<Block> pedestals, List<ItemStack> items) {
 		this.l = drop;
@@ -34,7 +34,7 @@ public class RitualAnimation implements Runnable {
 		this.output = output;
 		this.pedestals = pedestals;
 		this.items = items;
-		this.particles = new ArrayList<Location>();
+		this.particles = new ArrayList<>();
 
 		this.running = true;
 		this.stage = 0;

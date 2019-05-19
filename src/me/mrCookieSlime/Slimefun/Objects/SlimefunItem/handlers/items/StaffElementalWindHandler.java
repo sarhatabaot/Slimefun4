@@ -11,7 +11,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class StaffElementalWindHandler extends ItemInteractionHandler {
-    //TODO: abstract handler for staff
+    //TODO: abstract handler for staff, package? check spigot for doc
     @Override
     public boolean onRightClick(ItemUseEvent e, Player p, ItemStack item) {
         if (SlimefunManager.isItemSimiliar(item, SlimefunItems.STAFF_WIND, true)) {

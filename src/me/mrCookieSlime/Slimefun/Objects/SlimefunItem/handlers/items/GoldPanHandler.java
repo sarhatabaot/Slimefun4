@@ -21,7 +21,7 @@ public class GoldPanHandler extends ItemInteractionHandler {
         if (SlimefunManager.isItemSimiliar(item, SlimefunItems.GOLD_PAN, true)) {
             if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.GRAVEL) {
                 if (CSCoreLib.getLib().getProtectionManager().canBuild(p.getUniqueId(), e.getClickedBlock(), true)) {
-                    List<ItemStack> drops = new ArrayList<ItemStack>();
+                    List<ItemStack> drops = new ArrayList<>();
                     if (SlimefunStartup.chance(100, (Integer) Slimefun.getItemValue("GOLD_PAN", "chance.SIFTED_ORE"))) drops.add(SlimefunItems.SIFTED_ORE);
                     else if (SlimefunStartup.chance(100, (Integer) Slimefun.getItemValue("GOLD_PAN", "chance.CLAY"))) drops.add(new ItemStack(Material.CLAY_BALL));
                     else if (SlimefunStartup.chance(100, (Integer) Slimefun.getItemValue("GOLD_PAN", "chance.FLINT"))) drops.add(new ItemStack(Material.FLINT));

@@ -37,13 +37,13 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.Variables;
 
 public class AncientAltarListener implements Listener {
+	private List<Block> altars = new ArrayList<>();
+	private Set<UUID> removed_items = new HashSet<>();
 
 	public AncientAltarListener(SlimefunStartup plugin) {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	List<Block> altars = new ArrayList<Block>();
-	Set<UUID> removed_items = new HashSet<UUID>();
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onInteract(PlayerInteractEvent e) {

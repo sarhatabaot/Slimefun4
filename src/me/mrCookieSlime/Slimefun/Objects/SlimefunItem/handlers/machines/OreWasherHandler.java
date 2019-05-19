@@ -23,7 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
 
 public class OreWasherHandler extends MultiBlockInteractionHandler {
     @Override
@@ -32,19 +32,11 @@ public class OreWasherHandler extends MultiBlockInteractionHandler {
     }
 
     private ItemStack getRandomDust() {
-        //define in cache, or before hand to reduce creation of an arraylist every time
-        ArrayList<ItemStack> dusts = new ArrayList<>();
-        dusts.add(SlimefunItems.GOLD_DUST);
-        dusts.add(SlimefunItems.ALUMINUM_DUST);
-        dusts.add(SlimefunItems.COPPER_DUST);
-        dusts.add(SlimefunItems.ZINC_DUST);
-        dusts.add(SlimefunItems.TIN_DUST);
-        dusts.add(SlimefunItems.MAGNESIUM_DUST);
-        dusts.add(SlimefunItems.LEAD_DUST);
-        dusts.add(SlimefunItems.SILVER_DUST);
+        ArrayList<ItemStack> dusts = new ArrayList<>(Arrays.asList(SlimefunItems.GOLD_DUST,SlimefunItems.ALUMINUM_DUST,
+                SlimefunItems.COPPER_DUST, SlimefunItems.ZINC_DUST,SlimefunItems.TIN_DUST,SlimefunItems.MAGNESIUM_DUST,
+                SlimefunItems.LEAD_DUST,SlimefunItems.SILVER_DUST));
 
-        Random random = new Random();
-        int index = random.nextInt(dusts.size());
+        int index = CSCoreLib.randomizer().nextInt(dusts.size());
 
         if (SlimefunStartup.chance(100, 25))
             return dusts.get(index);
