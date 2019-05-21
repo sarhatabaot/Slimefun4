@@ -61,13 +61,8 @@
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
         </dependency>
-        <!--
         <dependency>
             <groupId>com.github.TheBusyBiscuit</groupId>
-            <artifactId>CS-CoreLib</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>com.github.sarhatabaot</groupId>
             <artifactId>CS-CoreLib</artifactId>
         </dependency>
         <dependency>
