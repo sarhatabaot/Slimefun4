@@ -41,7 +41,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 	private static final int[] border_in = {9, 10, 11, 12, 13, 18, 22, 27, 31, 36, 40, 45, 46, 47, 48, 49};
 	private static final int[] border_out = {23, 24, 25, 26, 32, 35, 41, 42, 43, 44};
 	
-	public static Map<String, ItemStack> recipes = new HashMap<String, ItemStack>();
+	public static Map<String, ItemStack> recipes = new HashMap<>();
 
 	public AutomatedCraftingChamber(Category category, ItemStack item, String name, RecipeType recipeType, ItemStack[] recipe) {
 		super(category, item, name, recipeType, recipe);
@@ -87,7 +87,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 			public int[] getSlotsAccessedByItemTransport(BlockMenu menu, ItemTransportFlow flow, ItemStack item) {
 				if (flow.equals(ItemTransportFlow.WITHDRAW)) return getOutputSlots();
 				
-				List<Integer> slots = new ArrayList<Integer>();
+				List<Integer> slots = new ArrayList<>();
 				for (int slot : getInputSlots()) {
 					if (menu.getItemInSlot(slot) != null) slots.add(slot);
 				}
@@ -169,7 +169,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 		);
 	}
 	
-	public abstract int getEnergyConsumption();
+	public abstract int getEnergyConsumption(); //todo: abstract with an interface..
 	
 	public int[] getInputSlots() {
 		return new int[] {19, 20, 21, 28, 29, 30, 37, 38, 39};
@@ -177,7 +177,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 	
 	public int[] getOutputSlots() {
 		return new int[] {33, 34};
-	}
+	} //todo: implement SlotsInput, SlotsOutput
 	
 	private Inventory inject(Block b) {
 		int size = BlockStorage.getInventory(b).toInventory().getSize();
@@ -231,7 +231,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 		if (ChargableBlock.getCharge(b) < getEnergyConsumption()) return;
 		
 		BlockMenu menu = BlockStorage.getInventory(b);
-		String input = getSerializedRecipe(menu);
+		String input = getSerializedRecipe(menu); //todo: why serialize? and not check the recipe
 
 		if(input == null) return;
 
@@ -253,7 +253,26 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 			}
 		}
 	}
+	private String getSerializedRecipe(BlockMenu menu){ //todo: implement with interface
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for (int j = 0; j < 9; j++) {
+			if (i > 0) {
+				builder.append(" </slot> ");
+			}
 
+			ItemStack item = menu.getItemInSlot(getInputSlots()[j]);
+
+			if (item != null && item.getAmount() == 1) return null;
+
+			builder.append(CustomItemSerializer.serialize(item, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL));
+
+			i++;
+		}
+		return builder.toString();
+	}
+
+	//FOR TESTING ONLY
 	private void printRecipeMap(){
 		String BOLD_RED = "\u001b[1m \u001b[31m";
 		String RESET = "\u001b[0m";
@@ -285,24 +304,7 @@ public abstract class AutomatedCraftingChamber extends SlimefunItem {
 		System.out.print("]");
 		ItemStack output = RecipeType.getRecipeOutputList(SlimefunItem.getByID("ENHANCED_CRAFTING_TABLE"),array);
 		System.out.println(GREEN+CustomItemSerializer.serialize(output, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL)+RESET);
-	}
+	}//END OF FOR TESTING ONLY
 
-	private String getSerializedRecipe(BlockMenu menu){
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
-		for (int j = 0; j < 9; j++) {
-			if (i > 0) {
-				builder.append(" </slot> ");
-			}
 
-			ItemStack item = menu.getItemInSlot(getInputSlots()[j]);
-
-			if (item != null && item.getAmount() == 1) return null;
-
-			builder.append(CustomItemSerializer.serialize(item, ItemFlag.DATA, ItemFlag.ITEMMETA_DISPLAY_NAME, ItemFlag.ITEMMETA_LORE, ItemFlag.MATERIAL));
-
-			i++;
-		}
-		return builder.toString();
-	}
 }

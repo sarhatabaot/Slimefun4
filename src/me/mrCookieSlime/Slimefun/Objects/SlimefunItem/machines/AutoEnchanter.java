@@ -58,35 +58,7 @@ public class AutoEnchanter extends AContainer {
 	@Override
 	protected void tick(Block b) {
 		if (isProcessing(b)) {
-			int timeleft = progress.get(b);
-			if (timeleft > 0) {
-				ItemStack item = getProgressBar().clone();
-				ItemMeta im = item.getItemMeta();
-				((Damageable) im).setDamage(MachineHelper.getDurability(item, timeleft, processing.get(b).getTicks()));
-				im.setDisplayName(" ");
-				List<String> lore = new ArrayList<String>();
-				lore.add(MachineHelper.getProgress(timeleft, processing.get(b).getTicks()));
-				lore.add("");
-				lore.add(MachineHelper.getTimeLeft(timeleft / 2));
-				im.setLore(lore);
-				item.setItemMeta(im);
-
-				BlockStorage.getInventory(b).replaceExistingItem(22, item);
-
-				if (ChargableBlock.isChargable(b)) {
-					if (ChargableBlock.getCharge(b) < getEnergyConsumption()) return;
-					ChargableBlock.addCharge(b, -getEnergyConsumption());
-					progress.put(b, timeleft - 1);
-				}
-				else progress.put(b, timeleft - 1);
-			}
-			else {
-				BlockStorage.getInventory(b).replaceExistingItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
-				pushItems(b, processing.get(b).getOutput());
-
-				progress.remove(b);
-				processing.remove(b);
-			}
+			processing(b);
 		}
 		else {
 			MachineRecipe r = null;
@@ -101,8 +73,8 @@ public class AutoEnchanter extends AContainer {
 				
 				// Enchant
 				if (item != null && item.getType() == Material.ENCHANTED_BOOK && target != null) {
-					Map<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
-					Set<ItemEnchantment> enchantments2 = new HashSet<ItemEnchantment>();
+					Map<Enchantment, Integer> enchantments = new HashMap<>();
+					Set<ItemEnchantment> enchantments2 = new HashSet<>();
 					int amount = 0;
 					int special_amount = 0;
 					EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
@@ -155,6 +127,39 @@ public class AutoEnchanter extends AContainer {
 	@Override
 	public String getMachineIdentifier() {
 		return "AUTO_ENCHANTER";
+	}
+
+
+	private void processing(Block b){
+		int timeleft = progress.get(b);
+		if (timeleft > 0) {
+			ItemStack item = getProgressBar().clone();
+			ItemMeta im = item.getItemMeta();
+			((Damageable) im).setDamage(MachineHelper.getDurability(item, timeleft, processing.get(b).getTicks()));
+			im.setDisplayName(" ");
+			List<String> lore = new ArrayList<>();
+			lore.add(MachineHelper.getProgress(timeleft, processing.get(b).getTicks()));
+			lore.add("");
+			lore.add(MachineHelper.getTimeLeft(timeleft / 2));
+			im.setLore(lore);
+			item.setItemMeta(im);
+
+			BlockStorage.getInventory(b).replaceExistingItem(22, item);
+
+			if (ChargableBlock.isChargable(b)) {
+				if (ChargableBlock.getCharge(b) < getEnergyConsumption()) return;
+				ChargableBlock.addCharge(b, -getEnergyConsumption());
+				progress.put(b, timeleft - 1);
+			}
+			else progress.put(b, timeleft - 1);
+		}
+		else {
+			BlockStorage.getInventory(b).replaceExistingItem(22, new CustomItem(new ItemStack(Material.BLACK_STAINED_GLASS_PANE), " "));
+			pushItems(b, processing.get(b).getOutput());
+
+			progress.remove(b);
+			processing.remove(b);
+		}
 	}
 
 }
