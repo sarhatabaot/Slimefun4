@@ -1,0 +1,527 @@
+##
+# Items
+##
+portable_crafter: "Portable Crafter"
+portable_dustbin: "Portable Dustbin"
+ender_backpack: "Ender Backpack"
+magic_eye_of_ender: "&6&lMagic Eye of Ender"
+broken_spawner: "&cBroken Spawner"
+repaired_spawner: "&bReinforced Spawner"
+infernal_bonemeal: "&4Infernal Bonemeal"
+##
+# Gadgets
+##
+gold_pan: "&6Gold Pan"
+parachute: "&r&lParachute"
+grappling_hook: "&6Grappling Hook"
+solar_helmet: "&bSolar Helmet"
+cloth: "&bCloth"
+can: "Can"
+night_vision_goggles: "&aNight Vision Goggles"
+farmer_shoes: "&eFarmer Shoes"
+flask_of_knowledge: "&cFlask of Knowledge"
+rag: "&cRag"
+bandage: "&cBandage"
+splint: "&cSplint"
+vitamins: "&cVitamins"
+medicine: "&cMedicine"
+##
+# Backpacks
+##
+backpack_small:
+backpack_medium:
+backpack_large:
+woven_backpack:
+gilded_backpack:
+bound_backpack:
+# Void Bags
+voidbag_small:
+voidbag_medium:
+voidbag_big:
+voidbag_large:
+bound_voidbag:
+##
+# Jetpacks
+##
+duralumin_jetpack: "&9Electric Jetpack &7- &eI"
+solder_jetpack: "&9Electric Jetpack &7- &eII"
+billon_jetpack: "&9Electric Jetpack &7- &eIII"
+steel_jetpack: "&9Electric Jetpack &7- &eIV"
+damascus_steel_jetpack: "&9Electric Jetpack &7- &eV"
+reinforced_alloy_jetpack: "&9Electric Jetpack &7- &eVI"
+carbonado_jetpack: "&9Electric Jetpack &7- &eVII"
+armored_jetpack: "&9Armored Jetpack"
+##
+# Jetboots
+##
+duralumin_jetboots: "&9Jet Boots &7- &eI"
+solder_jetboots: "&9Jet Boots &7- &eII"
+billon_jetboots: "&9Jet Boots &7- &eIII"
+steel_jetboots: "&9Jet Boots &7- &eIV"
+damascus_steel_jetboots: "&9Jet Boots &7- &eV"
+reinforced_allow_jetboots: "&9Jet Boots &7- &eVI"
+carbonado_jetboots: "&9Jet Boots &7- &eVII"
+armored_jetboots: "&9Armored Jet Boots"
+##
+# Multi Tools
+##
+duralumin_multi_tool: "&9Multi Tool &7- &eI"
+solder_multi_tool: "&9Multi Tool &7- &eII"
+billon_multi_tool: "&9Multi Tool &7- &eIII"
+steel_multi_tool: "&9Multi Tool &7- &eIV"
+damascus_steel_multi_tool: "&9Multi Tool &7- &eV"
+reinforced_alloy_multi_tool: "&9Multi Tool &7- &eVI"
+carbondao_multi_tool: "&9Multi Tool &7- &eVII"
+##
+# Food
+##
+fortune_cookie: "&6Fortune Cookie"
+beef_jerky: "&6Beef Jerky"
+magic_sugar: "&6Magic Sugar"
+monster_jerky: "&6Monster Jerky"
+apple_juice: "&cApple Juice"
+melon_juice: "&cMelon Juice"
+carrot_juice: "&6Carrot Juice"
+pumpkin_juice: "&6Pumpkin Juice"
+golden_apple_juice: "&bGolden Apple Juice"
+##
+# Christmas
+##
+christmas_milk: "&6Glass of Milk"
+christmas_chocolate_milk: "&6Chocolate Milk"
+christmas_egg_nog: "&aEgg Nog"
+christmass_apple_cider: "&cApple Cider"
+christmas_cookie:
+christmas_fruit_cake:
+christmas_apple_pie:
+christmas_hot_chocolate:
+christmas_cake:
+christmas_caramel:
+christmas_caramel_apple:
+christmas_chocolate_apple:
+christmas_present:
+##
+# Easter
+##
+easter_egg: "&rEaster Egg"
+easter_carrot_pie: "&6Carrot Pie"
+##
+# Weapons
+##
+grandmas_walking_stick:
+grandpas_walking_stick:
+stone_of_beheading:
+blade_of_vampires:
+seismic_axe:
+##
+# Bows
+##
+explosive_bow:
+icy_bow:
+##
+# Tools
+##
+auto_smelt_pickaxe:
+lumber_axe:
+pickaxe_of_containment:
+hercules_pickaxe:
+explosive_pickaxe:
+pickaxe_of_the_seeker:
+cobalt_pickaxe:
+pickaxe_of_vein_mining:
+##
+# Armor
+##
+glowstone_helmnet:
+glowstone_chestplate:
+glowstone_leggins:
+glowstone_boots:
+ender_helmet:
+ender_chestplate:
+ender_boots:
+slime_helmet:
+slime_chestplate:
+slime_leggings:
+slime_boots:
+cactus_helmet:
+cactus_chestplate:
+cactus_leggings:
+cactus_boots:
+damascus_steel_helmet:
+damascus_steel_chestplate:
+damascus_steel_leggins:
+damascus_steel_boots:
+reinforced_alloy_helmet:
+reinforced_alloy_chestplate:
+reinforced_alloy_leggings:
+reinforced_alloy_boots:
+scuba_helmet:
+hazmatsuit_chestplate:
+hazmatsuit_leggings:
+rubber_boots:
+gilded_iron_helmet:
+gilded_iron_chestplate:
+gilded_iron_leggings:
+gilded_iron_boots:
+gold_helmet:
+gold_chestplate:
+gold_leggings:
+gold_boots:
+slime_helmet_steel:
+slime_chestplate_steel:
+slime_leggings_steel:
+slime_boots_steel:
+boots_of_the_stomper:
+heavy_metal_helmet:
+heavy_metal_chestplate:
+heavy_metal_leggings:
+heavy_metal_boots:
+##
+# Misc
+##
+magic_lump_1:
+magic_lump_2:
+magic_lump_3:
+ender_lump_1:
+ender_lump_2:
+ender_lump_3:
+magical_book_cover:
+basic_circuit_board:
+advanced_circuit_board:
+wheat_flour:
+steel_plate:
+compressed_carbon:
+battery:
+steel_thruster:
+power_crystal:
+lava_crystal:
+chain:
+hook:
+sifted_ore:
+stone_chunk:
+carbon_chunk:
+salt:
+butter:
+cheese:
+heavy_cream:
+crushed_ore:
+pulverized_ore:
+tiny_uranium:
+small_uranium:
+magnet:
+necrotic_skull:
+essence_of_afterlife:
+electro_magnet:
+heating_coil:
+cooling_unit:
+electric_motor:
+cargo_motor:
+scroll_of_dimensional_teleposition:
+tome_of_knowledge_sharing:
+hardened_glass:
+wither_proof_obsidian:
+wither_proof_glass:
+reinforced_plate:
+ancient_pedstal:
+ancient_altar:
+duct_tape:
+rainbow_wool:
+rainbow_glass:
+rainbow_clay:
+rainbow_glass_pane:
+rainbow_wool_xmas:
+rainbow_glass_xmas:
+rainbow_clay_xmas:
+rainbow_glass_pane_xmas:
+rainbow_wool_valentine:
+rainbow_glass_valentine:
+rainbow_clay_valentine:
+rainbow_glass_pane_valentine:
+##
+# Ingots
+##
+copper_ingot:
+tin_ingot:
+silver_ingot:
+aluminum_ingot:
+lead_ingot:
+zinc_ingot:
+magnesium_ingot:
+steel_ingot:
+bronze_ingot:
+duralumin_ingot:
+billon_ingot:
+brass_ingot:
+aluminum_brass_ingot:
+corinthian_bronze_ingot:
+solder_ingot:
+damascus_steel_ingot:
+hardened_metal_ingot:
+reinforced_alloy_ingot:
+ferrosilicon:
+gilden_iron:
+redstone_allow:
+nickel_ingot:
+cobalt_ingot:
+##
+# Gold
+##
+gold_4k: "&rGold Ingot &7(4-Carat)"
+gold_6k: "&rGold Ingot &7(6-Carat)"
+gold_8k: "&rGold Ingot &7(8-Carat)"
+gold_10k: "&rGold Ingot &7(10-Carat)"
+gold_12k: "&rGold Ingot &7(12-Carat)"
+gold_14k: "&rGold Ingot &7(14-Carat)"
+gold_16k: "&rGold Ingot &7(16-Carat)"
+gold_18k: "&rGold Ingot &7(18-Carat)"
+gold_20k: "&rGold Ingot &7(20-Carat)"
+gold_22k: "&rGold Ingot &7(22-Carat)"
+gold_24k: "&rGold Ingot &7(24-Carat)"
+##
+# Dusts
+##
+iron_dust:
+gold_dust:
+tin_dust:
+copper_dust:
+silver_dust:
+aluminum_dust:
+lead_dust:
+sulfate:
+zinc_dust:
+magnesium_dust:
+carbon:
+silicon:
+gold_24k_block:
+##
+# Gems
+##
+synthetic_diamond:
+synthetic_emerald:
+synthetic_sapphire:
+carbonado:
+raw_carbonado:
+uranium:
+neptunium:
+booster_uranium:
+##
+# Talisman
+##
+talisman:
+talisman_anvil:
+talisman_miner:
+talisman_hunter:
+talisman_lava:
+talisman_angel:
+talisman_fire:
+talisman_magician:
+talisman_warrior:
+talisman_knight:
+talisman_whirlwind:
+talisman_wizard:
+##
+# Staves
+##
+staff_elemental:
+staff_wind:
+staff_fire:
+staff_water:
+##
+# Machines
+##
+grind_stone:
+armor_forge:
+smeltery:
+ignition_chamber:
+ore_crusher:
+compressor:
+pressure_chamber:
+magic_workbench:
+ore_washer:
+saw_mill:
+composter:
+enhanced_crafting_table:
+crucible:
+juicer:
+
+solar_panel:
+solar_array:
+digital_miner:
+advanced_digital_miner:
+hologram_projector:
+block_placer:
+##
+# Enhanced Furnaces
+##
+enhanced_furnace: "&7Enhanced Furnace - &eI"
+enhanced_furnace_2: "&7Enhanced Furnace - &eII"
+enhanced_furnace_3: "&7Enhanced Furnace - &eIII"
+enhanced_furnace_4: "&7Enhanced Furnace - &eIV"
+enhanced_furnace_5: "&7Enhanced Furnace - &eV"
+enhanced_furnace_6: "&7Enhanced Furnace - &eVI"
+enhanced_furnace_7: "&7Enhanced Furnace - &eVII"
+enhanced_furnace_8: "&7Enhanced Furnace - &eVIII"
+enhanced_furnace_9: "&7Enhanced Furnace - &eIX"
+enhanced_furnace_10: "&7Enhanced Furnace - &eX"
+enhanced_furnace_11: "&7Enhanced Furnace - &eXI"
+reinforced_furnace: "&7Reinforced Furnace"
+carbonado_edged_furnace: "&7Carbonado Edged Furnace"
+##
+# Soulbound Items
+##
+
+##
+# Runes
+##
+blank_rune: "&8Blank Rune"
+rune_air: "&7Ancient Rune &8&l[&b&lAir&8&l]"
+rune_water: "&7Ancient Rune &8&l[&1&lWater&8&l]"
+rune_fire: "&7Ancient Rune &8&l[&4&lFire&8&l]"
+rune_earth: "&7Ancient Rune &8&l[&c&lEarth&8&l]"
+rune_ender: "&7Ancient Rune &8&l[&5&lEnder&8&l]"
+rune_rainbow: "&7Ancient Rune &8&l[&d&lRainbow&8&l]"
+##
+# Electricity
+##
+solar_generator: "&bSolar Generator"
+solar_generator_2: "&cAdvanced Solar Generator"
+solar_generator_3: "&4Carbonado Solar Generator",
+solar_generator_4: "&eEnergized Solar Generator"
+coal_generator:
+lava_generator:
+electric_furnace: "&cElectric Furnace"
+electric_furnace_2: "&cElectric Furnace &7- &eII"
+electric_furnace_3: "&cElectric Furnace &7- &eIII"
+electric_ore_grinder:
+electric_ore_grinder_2:
+electric_ingot_pulverizer:
+auto_enchanter:
+auto_anvil:
+auto_anvil_2:
+bio_reactor:
+multimeter:
+small_capacitor:
+medium_capacitor:
+large_capacitor:
+carbonado_edged_capacitor:
+##
+# Robots
+##
+programmable_android:
+programmable_android_miner:
+programmable_android_butcher:
+programmable_android_farmer:
+programmable_android_woodcutter:
+programmable_android_fisherman:
+programmable_android_2:
+programmable_android_2_fisherman:
+programmable_android_2_farmer:
+programmable_android_2_butcher:
+programmable_android_3:
+programmable_android_3_fisherman:
+programmable_android_3_butcher:
+##
+# GPS
+##
+gps_transmitter:
+gps_transmitter_2:
+gps_transmitter_3:
+gps_transmitter_4:
+gps_control_panel:
+gps_marker_tool:
+gps_emergency_transmitter:
+gps_geo_scanner:
+android_interface_fuel:
+android_interface_items:
+bucket_of_oil:
+bucket_of_fuel:
+oil_pump:
+refinery:
+combustion_reactor:
+android_memory_core:
+gps_teleporter_pylon:
+gps_teleportation_matrix:
+gps_activation_device_shared:
+gps_activation_device_personal:
+elevator:
+infused_hopper:
+plastic_sheet:
+heated_pressure_chamber:
+heated_pressure_chamber_2:
+electric_smeltery:
+electric_smeltery_2:
+electrified_crucible:
+electrified_crucible_2:
+electrified_crucible_3:
+carbon_press:
+carbon_press_2:
+carbon_press_3:
+blistering_ingot:
+blistering_ingot_2:
+blistering_ingot_3:
+energy_regulator:
+debug_fish:
+nether_ice:
+enriched_nether_ice:
+nether_ice_coolant_cell:
+nether_drill: "&4Nether Drill"
+##
+# Cargo
+##
+cargo_manager:
+cargo_node:
+cargo_input:
+cargo_output:
+cargo_output_advanced:
+auto_breeder:
+organic_food:
+wheat_organic_food:
+carrot_organic_food:
+potato_organic_food:
+seeds_organic_food:
+beetroot_organic_food:
+melon_organic_food:
+apple_organic_food:
+fertilizer:
+wheat_fertilizer:
+carrot_fertilizer:
+potato_fertilizer:
+seeds_fertilizer:
+beetroot_fertilizer:
+apple_fertilizer:
+animal_growth_accelerator:
+chop_growth_accelerator:
+food_fabricator:
+food_fabricator_2:
+food_composter: "&cFood Composter"
+food_composter_2: "&cFood Composter &7(&eII&7)"
+xp_collector:
+reactor_coolant_cell:
+nuclear_reactor:
+netherstar_reactor:
+reactor_access_port: "&2Reactor Access Port"
+freezer:
+freezer_2:
+electric_gold_pan: "&6Electric Gold Pan"
+electric_gold_pan_2:
+electric_gold_pan_3:
+electric_dust_washer:
+electric_dust_washer_2:
+electric_dust_washer_3:
+electric_ingot_factory:
+electric_ingot_factory_2:
+electric_ingot_factory_3:
+automated_crafting_chamber:
+fluid_pump:
+charging_bench:
+wither_assembler:
+trash_can:
+elytra_scale:
+infused_elytra:
+souldbound_elytra:
+##
+# ChestTerminal Addon
+##
+chest_terminal: "&3CT Access Terminal"
+ct_import_bus: "&3CT Import Bus"
+ct_export_bus: "&3CT Export Bus"
