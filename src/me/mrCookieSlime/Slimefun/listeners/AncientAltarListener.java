@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -42,8 +43,8 @@ public class AncientAltarListener implements Listener {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	List<Block> altars = new ArrayList<Block>();
-	Set<UUID> removed_items = new HashSet<UUID>();
+	List<Block> altars = new ArrayList<>();
+	Set<UUID> removed_items = new HashSet<>();
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onInteract(PlayerInteractEvent e) {
@@ -98,7 +99,7 @@ public class AncientAltarListener implements Listener {
 							Variables.altarinuse.add(pblock.getLocation());
 						});
 						if (catalyst != null && !catalyst.getType().equals(Material.AIR)) {
-							List<ItemStack> input = new ArrayList<ItemStack>();
+							List<ItemStack> input = new ArrayList<>();
 							for (Block pedestal: pedestals) {
 								Item stack = findItem(pedestal);
 								if (stack != null) input.add(fixItemStack(stack.getItemStack(), stack.getCustomName()));
@@ -106,7 +107,7 @@ public class AncientAltarListener implements Listener {
 
 							ItemStack result = Pedestals.getRecipeOutput(catalyst, input);
 							if (result != null) {
-								List<ItemStack> consumed = new ArrayList<ItemStack>();
+								List<ItemStack> consumed = new ArrayList<>();
 								consumed.add(catalyst);
 								PlayerInventory.consumeItemInHand(e.getPlayer());
 								Bukkit.getScheduler().scheduleSyncDelayedTask(SlimefunStartup.instance, new RitualAnimation(altars, b, b.getLocation().add(0.5, 1.3, 0.5), result, pedestals, consumed), 10L);
@@ -145,8 +146,10 @@ public class AncientAltarListener implements Listener {
 			ItemMeta im = stack.getItemMeta();
 			im.setDisplayName(null);
 			stack.setItemMeta(im);
-		} else {
+		} 
+		else {
 			ItemMeta im = stack.getItemMeta();
+			if (!customName.startsWith(String.valueOf(ChatColor.COLOR_CHAR))) customName = ChatColor.RESET + customName;
 			im.setDisplayName(customName);
 			stack.setItemMeta(im);
 		}

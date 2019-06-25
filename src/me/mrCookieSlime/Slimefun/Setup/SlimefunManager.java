@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 
 import me.mrCookieSlime.Slimefun.SlimefunStartup;
@@ -22,7 +21,7 @@ public class SlimefunManager {
 	
 	public static SlimefunStartup plugin;
 	public static String PREFIX;
-	public static Map<EntityType, List<ItemStack>> drops = new HashMap<EntityType, List<ItemStack>>();
+	public static Map<EntityType, List<ItemStack>> drops = new HashMap<>();
 	
 	public static void registerArmorSet(ItemStack baseComponent, ItemStack[] items, String idSyntax, PotionEffect[][] effects, boolean special, boolean slimefun) {
 		String[] components = new String[] {"_HELMET", "_CHESTPLATE", "_LEGGINGS", "_BOOTS"};
@@ -70,6 +69,8 @@ public class SlimefunManager {
 		return isItemSimiliar(item, SFitem, lore, DataType.IF_COLORED);
 	}
 	
+	
+	@Deprecated
 	public static enum DataType {
 		
 		ALWAYS,
@@ -78,23 +79,12 @@ public class SlimefunManager {
 		
 	}
 
+	@Deprecated
 	public static boolean isItemSimiliar(ItemStack item, ItemStack SFitem, boolean lore, DataType data) {
 		if (item == null) return SFitem == null;
 		if (SFitem == null) return false;
 		
 		if (item.getType() == SFitem.getType() && item.getAmount() >= SFitem.getAmount()) {
-			//ToDo: Removed data_safe - is that correct?
-			if (data.equals(DataType.ALWAYS)/* || (data.equals(DataType.IF_COLORED) && data_safe.contains(item.getType()))*/) {
-/*				if (data_safe.contains(item.getType())) {
-					if (item.getData().getData() != SFitem.getData().getData()) {
-						if (!(SFitem.getDurability() == item.getData().getData() && SFitem.getData().getData() == item.getDurability())) return false;
-					}
-				}
-				else*/ if (data.equals(DataType.ALWAYS) && ((Damageable) item.getItemMeta()).getDamage() != ((Damageable) SFitem.getItemMeta()).getDamage()) {
-					return false;
-				}
-			}
-			
 			if (item.hasItemMeta() && SFitem.hasItemMeta()) {
 				if (item.getItemMeta().hasDisplayName() && SFitem.getItemMeta().hasDisplayName()) {
 					if (item.getItemMeta().getDisplayName().equals(SFitem.getItemMeta().getDisplayName())) {
