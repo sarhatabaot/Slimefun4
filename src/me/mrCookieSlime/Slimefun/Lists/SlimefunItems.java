@@ -16,6 +16,8 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.Item.CustomPotion;
 import me.mrCookieSlime.CSCoreLibPlugin.general.String.Christmas;
 import me.mrCookieSlime.CSCoreLibPlugin.general.World.CustomSkull;
 
+import static me.mrCookieSlime.Slimefun.Setup.Localization.LANG;
+
 public class SlimefunItems {
 	
 	/*		 Items 		*/

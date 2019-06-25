@@ -2,6 +2,7 @@ package me.mrCookieSlime.Slimefun;
 
 import java.io.File;
 
+import me.mrCookieSlime.Slimefun.Setup.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -34,12 +35,6 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.machines.AutoEnchanter;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.machines.ElectricDustWasher;
-import me.mrCookieSlime.Slimefun.Setup.Files;
-import me.mrCookieSlime.Slimefun.Setup.Messages;
-import me.mrCookieSlime.Slimefun.Setup.MiscSetup;
-import me.mrCookieSlime.Slimefun.Setup.ResearchSetup;
-import me.mrCookieSlime.Slimefun.Setup.SlimefunManager;
-import me.mrCookieSlime.Slimefun.Setup.SlimefunSetup;
 import me.mrCookieSlime.Slimefun.URID.AutoSavingTask;
 import me.mrCookieSlime.Slimefun.URID.URID;
 import me.mrCookieSlime.Slimefun.WorldEdit.WESlimefunManager;
@@ -139,6 +134,7 @@ public class SlimefunStartup extends JavaPlugin {
 			utils.setupMetrics();
 			utils.setupLocalization();
 			config = utils.getConfig();
+			Localization.setup(this);
 			Messages.local = utils.getLocalization();
 			Messages.setup();
 
