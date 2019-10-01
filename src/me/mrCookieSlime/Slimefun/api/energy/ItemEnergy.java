@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.mrCookieSlime.CSCoreLibPlugin.general.Player.PlayerInventory;
-
-public class ItemEnergy {
+public final class ItemEnergy {
 	
-//	"&c&o&8\u21E8 &e\u26A1 &70 / 50 J"
+	private ItemEnergy() {}
+	
+	//	"&c&o&8\u21E8 &e\u26A1 &70 / 50 J"
 	
 	public static float getStoredEnergy(ItemStack item) {
-		if (item == null || item.getType() == null || item.getType().equals(Material.AIR)) return 0F;
+		if (item == null || item.getType() == null || item.getType() == Material.AIR) return 0F;
 		if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) return 0F;
 		
 		for (String line: item.getItemMeta().getLore()) {
@@ -29,7 +29,7 @@ public class ItemEnergy {
 	}
 
 	public static float getMaxEnergy(ItemStack item) {
-		if (item == null || item.getType() == null || item.getType().equals(Material.AIR)) return 0F;
+		if (item == null || item.getType() == null || item.getType() == Material.AIR) return 0F;
 		if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) return 0F;
 
 		for (String line: item.getItemMeta().getLore()) {
@@ -42,13 +42,13 @@ public class ItemEnergy {
 	}
 
 	public static float addStoredEnergy(ItemStack item, float energy) {
-		if (item == null || item.getType() == null || item.getType().equals(Material.AIR)) return 0F;
+		if (item == null || item.getType() == null || item.getType() == Material.AIR) return 0F;
 		if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) return 0F;
 
 		float rest = 0F;
 		float capacity = getMaxEnergy(item);
 
-		if (capacity == 0F) {
+		if ((int) capacity == 0) {
 			return rest;
 		}
 
@@ -76,7 +76,7 @@ public class ItemEnergy {
 			}
 		}
 
-		BigDecimal decimal = new BigDecimal(stored).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal decimal = BigDecimal.valueOf(stored).setScale(2, BigDecimal.ROUND_HALF_UP);
 
 		lore.set(index, ChatColor.translateAlternateColorCodes('&', "&c&o&8\u21E8 &e\u26A1 &7") + decimal.floatValue() + " / " + capacity + " J");
 		
@@ -98,8 +98,6 @@ public class ItemEnergy {
 		p.getInventory().setChestplate(chargeItem(p.getInventory().getChestplate(), energy));
 		p.getInventory().setLeggings(chargeItem(p.getInventory().getLeggings(), energy));
 		p.getInventory().setBoots(chargeItem(p.getInventory().getBoots(), energy));
-		
-		PlayerInventory.update(p);
 	}
 
 }

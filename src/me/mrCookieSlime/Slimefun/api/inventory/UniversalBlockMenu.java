@@ -3,20 +3,17 @@ package me.mrCookieSlime.Slimefun.api.inventory;
 import java.io.File;
 import java.util.ArrayList;
 
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class UniversalBlockMenu extends ChestMenu {
+import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
+
+public class UniversalBlockMenu extends DirtyChestMenu {
 	
-	BlockMenuPreset preset;
-	ItemManipulationEvent event;
-	
-	public int changes = 0;
+	private BlockMenuPreset preset;
+	private ItemManipulationEvent event;
 	
 	public UniversalBlockMenu(BlockMenuPreset preset) {
 		super(preset.getTitle());
@@ -38,9 +35,7 @@ public class UniversalBlockMenu extends ChestMenu {
 		
 		preset.clone(this);
 		
-		if (preset.getSize() > -1 && !preset.getPresetSlots().contains(preset.getSize() - 1)) {
-			if (cfg.contains(String.valueOf(preset.getSize() - 1))) addItem(preset.getSize() - 1, cfg.getItem(String.valueOf(preset.getSize() - 1)));
-		}
+		if (preset.getSize() > -1 && !preset.getPresetSlots().contains(preset.getSize() - 1) && cfg.contains(String.valueOf(preset.getSize() - 1))) addItem(preset.getSize() - 1, cfg.getItem(String.valueOf(preset.getSize() - 1)));
 		
 		this.getContents();
 	}
@@ -50,7 +45,7 @@ public class UniversalBlockMenu extends ChestMenu {
 	}
 	
 	public void save() {
-		if (changes == 0) return;
+		if (!isDirty()) return;
 		// To force CS-CoreLib to build the Inventory
 		this.getContents();
 		
@@ -85,12 +80,11 @@ public class UniversalBlockMenu extends ChestMenu {
 			item = this.event.onEvent(slot, previous, item);
 		}
 		super.replaceExistingItem(slot, item);
-		
-		changes++;
+		markDirty();
 	}
 	
 	public void close() {
-		for(HumanEntity human: new ArrayList<>(toInventory().getViewers())) {
+		for (HumanEntity human: new ArrayList<>(toInventory().getViewers())) {
 			human.closeInventory();
 		}
 	}

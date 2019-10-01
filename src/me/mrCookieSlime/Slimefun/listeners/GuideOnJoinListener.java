@@ -6,12 +6,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import me.mrCookieSlime.Slimefun.SlimefunGuide;
-import me.mrCookieSlime.Slimefun.SlimefunStartup;
-import me.mrCookieSlime.Slimefun.Misc.BookDesign;
+import me.mrCookieSlime.Slimefun.SlimefunPlugin;
+import me.mrCookieSlime.Slimefun.api.SlimefunGuideLayout;
 
 public class GuideOnJoinListener implements Listener {
 
-	public GuideOnJoinListener(SlimefunStartup plugin) {
+	public GuideOnJoinListener(SlimefunPlugin plugin) {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -19,11 +19,11 @@ public class GuideOnJoinListener implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		if (!e.getPlayer().hasPlayedBefore()) {
 			Player p = e.getPlayer();
-			if (!SlimefunStartup.getWhitelist().getBoolean(p.getWorld().getName() + ".enabled")) return;
-			if (!SlimefunStartup.getWhitelist().getBoolean(p.getWorld().getName() + ".enabled-items.SLIMEFUN_GUIDE")) return;
+			if (!SlimefunPlugin.getWhitelist().getBoolean(p.getWorld().getName() + ".enabled")) return;
+			if (!SlimefunPlugin.getWhitelist().getBoolean(p.getWorld().getName() + ".enabled-items.SLIMEFUN_GUIDE")) return;
 			
-			p.getInventory().addItem(SlimefunStartup.getCfg().getBoolean("guide.default-view-book")
-					? SlimefunGuide.getItem(BookDesign.BOOK) : SlimefunGuide.getItem(BookDesign.CHEST));
+			SlimefunGuideLayout type = SlimefunPlugin.getCfg().getBoolean("guide.default-view-book") ? SlimefunGuideLayout.BOOK : SlimefunGuideLayout.CHEST;
+			p.getInventory().addItem(SlimefunGuide.getItem(type));
 		}
 	}
 

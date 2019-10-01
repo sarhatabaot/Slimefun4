@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.PlayerProfile;
 import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * @since 4.0
  * 
  * @see Category
- * @see SeasonCategory
+ * @see SeasonalCategory
  */
 public class LockedCategory extends Category {
 
@@ -111,13 +112,11 @@ public class LockedCategory extends Category {
 	 * @since 4.0
 	 */
 	public boolean hasUnlocked(Player p) {
+		PlayerProfile profile = PlayerProfile.get(p);
+		
 		for (Category category: parents) {
 			for (SlimefunItem item: category.getItems()) {
-				if (Slimefun.isEnabled(p, item.getItem(), false) && Slimefun.hasPermission(p, item, false)) {
-					if (item.getResearch() != null) {
-						if (!item.getResearch().hasUnlocked(p)) return false;
-					}
-				}
+				if (Slimefun.isEnabled(p, item.getItem(), false) && Slimefun.hasPermission(p, item, false) && item.getResearch() != null && !profile.hasUnlocked(item.getResearch())) return false;
 			}
 		}
 		return true;

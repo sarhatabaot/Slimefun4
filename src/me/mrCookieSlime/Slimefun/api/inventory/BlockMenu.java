@@ -2,6 +2,7 @@ package me.mrCookieSlime.Slimefun.api.inventory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -10,19 +11,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import me.mrCookieSlime.Slimefun.api.Slimefun;
 
-public class BlockMenu extends ChestMenu {
+public class BlockMenu extends DirtyChestMenu {
 	
-	BlockMenuPreset preset;
-	Location l;
-	
-	public int changes = 0;
+	private BlockMenuPreset preset;
+	private Location l;
 	
 	private ItemManipulationEvent event;
 	
 	private static String serializeLocation(Location l) {
-		return l.getWorld().getName() + ";" + l.getBlockX() + ";" + l.getBlockY() + ";" + l.getBlockZ();
+		return l.getWorld().getName() + ';' + l.getBlockX() + ';' + l.getBlockY() + ';' + l.getBlockZ();
 	}
 	
 	public BlockMenu(BlockMenuPreset preset, Location l) {
@@ -47,9 +46,7 @@ public class BlockMenu extends ChestMenu {
 		
 		preset.clone(this);
 		
-		if (preset.getSize() > -1 && !preset.getPresetSlots().contains(preset.getSize() - 1)) {
-			if (cfg.contains(String.valueOf(preset.getSize() - 1))) addItem(preset.getSize() - 1, cfg.getItem(String.valueOf(preset.getSize() - 1)));
-		}
+		if (preset.getSize() > -1 && !preset.getPresetSlots().contains(preset.getSize() - 1) && cfg.contains(String.valueOf(preset.getSize() - 1))) addItem(preset.getSize() - 1, cfg.getItem(String.valueOf(preset.getSize() - 1)));
 		
 		this.getContents();
 	}
@@ -59,7 +56,7 @@ public class BlockMenu extends ChestMenu {
 	}
 	
 	public void save(Location l) {
-		if (changes == 0) {
+		if (!isDirty()) {
 			return;
 		}
 		
@@ -98,7 +95,11 @@ public class BlockMenu extends ChestMenu {
 	}
 	
 	public void delete(Location l) {
-		new File("data-storage/Slimefun/stored-inventories/" + serializeLocation(l) + ".sfi").delete();
+		File file = new File("data-storage/Slimefun/stored-inventories/" + serializeLocation(l) + ".sfi");
+		
+		if (file.exists() && !file.delete()) {
+			Slimefun.getLogger().log(Level.WARNING, "Could not delete File: " + file.getName());
+		}
 	}
 	
 	public BlockMenuPreset getPreset() {
@@ -121,41 +122,12 @@ public class BlockMenu extends ChestMenu {
 			item = this.event.onEvent(slot, previous, item);
 		}
 		super.replaceExistingItem(slot, item);
-		
-		changes++;
-	}
-	
-	@Override
-	public ChestMenu addMenuOpeningHandler(MenuOpeningHandler handler) {
-		if (handler instanceof SaveHandler) {
-			return super.addMenuOpeningHandler(new SaveHandler(this, ((SaveHandler) handler).handler));
-		}
-		else {
-			return super.addMenuOpeningHandler(new SaveHandler(this, handler));
-		}
+		markDirty();
 	}
 	
 	public void close() {
-		for(HumanEntity human: new ArrayList<>(toInventory().getViewers())) {
+		for (HumanEntity human: new ArrayList<>(toInventory().getViewers())) {
 			human.closeInventory();
 		}
-	}
-	
-	public class SaveHandler implements MenuOpeningHandler {
-		
-		BlockMenu menu;
-		MenuOpeningHandler handler;
-		
-		public SaveHandler(BlockMenu menu, MenuOpeningHandler handler) {
-			this.handler = handler;
-			this.menu = menu;
-		}
-
-		@Override
-		public void onOpen(Player p) {
-			handler.onOpen(p);
-			menu.changes++;
-		}
-		
 	}
 }

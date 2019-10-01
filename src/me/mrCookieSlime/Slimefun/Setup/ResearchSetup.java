@@ -7,7 +7,9 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class ResearchSetup {
+public final class ResearchSetup {
+	
+	private ResearchSetup() {}
 	
 	public static void setupResearches() {
 	    Slimefun.registerResearch(new Research(0, "Walking Sticks", 1), SlimefunItems.GRANDMAS_WALKING_STICK, SlimefunItems.GRANDPAS_WALKING_STICK);
@@ -94,7 +96,7 @@ public class ResearchSetup {
 	    Slimefun.registerResearch(new Research(89, "Night Vision Goggles", 10), SlimefunItems.NIGHT_VISION_GOGGLES);
 	    Slimefun.registerResearch(new Research(90, "Pickaxe of Containment", 14), SlimefunItems.PICKAXE_OF_CONTAINMENT, SlimefunItems.BROKEN_SPAWNER);
 	    Slimefun.registerResearch(new Research(91, "Hercules Pickaxe", 28), SlimefunItems.HERCULES_PICKAXE);
-	    Slimefun.registerResearch(new Research(92, "Table Saw", 2), SlimefunItems.SAW_MILL, SlimefunItems.TABLE_SAW);
+	    Slimefun.registerResearch(new Research(92, "Table Saw", 4), SlimefunItems.TABLE_SAW);
 	    Slimefun.registerResearch(new Research(93, "Slimy Steel Armor", 27), SlimefunItems.SLIME_HELMET_STEEL, SlimefunItems.SLIME_CHESTPLATE_STEEL, SlimefunItems.SLIME_LEGGINGS_STEEL, SlimefunItems.SLIME_BOOTS_STEEL);
 	    Slimefun.registerResearch(new Research(94, "Blade of Vampires", 26), SlimefunItems.BLADE_OF_VAMPIRES);
 	    Slimefun.registerResearch(new Research(95, "Lazy Mining", 40), SlimefunItems.DIGITAL_MINER);
@@ -103,7 +105,7 @@ public class ResearchSetup {
 	    Slimefun.registerResearch(new Research(98, "Advanced Mining 101", 42), SlimefunItems.ADVANCED_DIGITAL_MINER);
 	    Slimefun.registerResearch(new Research(99, "Composting Dirt", 3), SlimefunItems.COMPOSTER);
 	    Slimefun.registerResearch(new Research(100, "Farmer Shoes", 4), SlimefunItems.FARMER_SHOES);
-	    Slimefun.registerResearch(new Research(101, "Explosive Pickaxe", 28), SlimefunItems.EXPLOSIVE_PICKAXE);
+	    Slimefun.registerResearch(new Research(101, "Explosive Tools", 30), SlimefunItems.EXPLOSIVE_PICKAXE, SlimefunItems.EXPLOSIVE_SHOVEL);
 	    Slimefun.registerResearch(new Research(102, "Automated Gold Pan", 17), SlimefunItems.AUTOMATED_PANNING_MACHINE);
 	    Slimefun.registerResearch(new Research(103, "Boots of the Stomper", 19), SlimefunItems.BOOTS_OF_THE_STOMPER);
 	    Slimefun.registerResearch(new Research(104, "Pickaxe of the Seeker", 19), SlimefunItems.PICKAXE_OF_THE_SEEKER);
@@ -176,7 +178,7 @@ public class ResearchSetup {
 	    Slimefun.registerResearch(new Research(178, "GPS Emergency Waypoint", 30), SlimefunItems.GPS_EMERGENCY_TRANSMITTER);
 	    Slimefun.registerResearch(new Research(179, "Programmable Androids", 50), SlimefunItems.PROGRAMMABLE_ANDROID, SlimefunItems.PROGRAMMABLE_ANDROID_FARMER, SlimefunItems.PROGRAMMABLE_ANDROID_BUTCHER, SlimefunItems.PROGRAMMABLE_ANDROID_FISHERMAN, SlimefunItems.PROGRAMMABLE_ANDROID_MINER, SlimefunItems.PROGRAMMABLE_ANDROID_WOODCUTTER);
 	    Slimefun.registerResearch(new Research(180, "Android Interfaces", 26), SlimefunItems.ANDROID_INTERFACE_FUEL, SlimefunItems.ANDROID_INTERFACE_ITEMS);
-	    Slimefun.registerResearch(new Research(181, "GEO-Scans", 30), SlimefunItems.GPS_GEO_SCANNER);
+	    Slimefun.registerResearch(new Research(181, "GEO-Scans", 30), SlimefunItems.GPS_GEO_SCANNER, SlimefunItems.PORTABLE_GEO_SCANNER);
 	    Slimefun.registerResearch(new Research(182, "Combustion Reactor", 38), SlimefunItems.COMBUSTION_REACTOR);
 	    Slimefun.registerResearch(new Research(183, "Teleporter Base Components", 42), SlimefunItems.GPS_TELEPORTATION_MATRIX, SlimefunItems.GPS_TELEPORTER_PYLON);
 	    Slimefun.registerResearch(new Research(184, "Teleporter Activation", 36), SlimefunItems.GPS_ACTIVATION_DEVICE_PERSONAL, SlimefunItems.GPS_ACTIVATION_DEVICE_SHARED);
@@ -237,5 +239,11 @@ public class ResearchSetup {
 	    Slimefun.registerResearch(new Research(239, "Automatic Ignition Chamber", 12), SlimefunItems.IGNITION_CHAMBER);
 	    Slimefun.registerResearch(new Research(240, "Basic machinery output chest", 20), SlimefunItems.OUTPUT_CHEST);
 	    Slimefun.registerResearch(new Research(241, "Thinned-down Conductivity", 15), SlimefunItems.COPPER_WIRE);
+	    Slimefun.registerResearch(new Research(242, "Radiant Backpack", 25), SlimefunItems.RADIANT_BACKPACK);
+	    Slimefun.registerResearch(new Research(243, "A Dry Day", 15), SlimefunItems.AUTO_DRIER);
+	    Slimefun.registerResearch(new Research(244, "Diet Cookie", 3), SlimefunItems.DIET_COOKIE);
+	    Slimefun.registerResearch(new Research(245, "Storm Staff", 30), SlimefunItems.STAFF_STORM);
+	    Slimefun.registerResearch(new Research(246, "Soulbound Rune", 60), SlimefunItems.RUNE_SOULBOUND);
+	    Slimefun.registerResearch(new Research(247, "GEO-Miner", 24), SlimefunItems.GEO_MINER);
 	}
 }

@@ -1,7 +1,6 @@
 package me.mrCookieSlime.Slimefun.GPS;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -16,13 +15,13 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.CustomBookOverlay;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.MenuHelper;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.Item.CustomItem;
-import me.mrCookieSlime.Slimefun.Setup.Messages;
+import me.mrCookieSlime.Slimefun.SlimefunPlugin;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 
-public class Elevator {
-	
-	public static List<UUID> ignored = new ArrayList<>();
+public final class Elevator {
 
+	private Elevator() {}
+	
 	public static void openEditor(Player p, final Block b) {
 		ChestMenu menu = new ChestMenu("Elevator Settings");
 		
@@ -35,7 +34,7 @@ public class Elevator {
 			pl.sendMessage("");
 			
 			MenuHelper.awaitChatInput(pl, (player, message) -> {
-				BlockStorage.addBlockInfo(b, "floor", message.replaceAll("&", "&"));
+				BlockStorage.addBlockInfo(b, "floor", message.replace(ChatColor.COLOR_CHAR, '&'));
 				
 				player.sendMessage("");
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&l>> &eSuccessfully named this Floor:"));
@@ -53,8 +52,10 @@ public class Elevator {
 	}
 
 	public static void openDialogue(Player p, Block b) {
-		if (ignored.contains(p.getUniqueId())) {
-			ignored.remove(p.getUniqueId());
+		Set<UUID> elevatorUsers = SlimefunPlugin.getUtilities().elevatorUsers;
+		
+		if (elevatorUsers.contains(p.getUniqueId())) {
+			elevatorUsers.remove(p.getUniqueId());
 			return;
 		}
 		
@@ -72,14 +73,14 @@ public class Elevator {
 				else {
 					tellraw.addText("&7" + index + ". &r" + floor + "\n");
 					tellraw.addHoverEvent(HoverAction.SHOW_TEXT, "\n&eClick to teleport to this Floor\n&r" + floor + "\n");
-					tellraw.addClickEvent(me.mrCookieSlime.CSCoreLibPlugin.general.Chat.TellRawMessage.ClickAction.RUN_COMMAND, "/sf elevator " + block.getX() + " " + block.getY() + " " + block.getZ() + " ");
+					tellraw.addClickEvent(me.mrCookieSlime.CSCoreLibPlugin.general.Chat.TellRawMessage.ClickAction.RUN_COMMAND, "/sf elevator " + block.getX() + ' ' + block.getY() + ' ' + block.getZ() + " ");
 				}
 				
 				index++;
 			}
 		}
 		if (index > 2) new CustomBookOverlay("Elevator", "Slimefun", tellraw).open(p);
-		else Messages.local.sendTranslation(p, "machines.ELEVATOR.no-destinations", true);
+		else SlimefunPlugin.getLocal().sendMessage(p, "machines.ELEVATOR.no-destinations", true);
 	}
 
 }
