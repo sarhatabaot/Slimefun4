@@ -1,8 +1,13 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of contents**
-
-- [Release Candidate 18 (TBD)](#release-candidate-18-tbd)
+# Table of contents
+- [Release Candidate 26 (TBD)](#release-candidate-26-tbd)
+- [Release Candidate 25 (20 Jun 2021)](#release-candidate-25-20-jun-2021)
+- [Release Candidate 24 (03 Jun 2021)](#release-candidate-24-03-jun-2021)
+- [Release Candidate 23 (19 May 2021)](#release-candidate-23-19-may-2021)
+- [Release Candidate 22 (18 Apr 2021)](#release-candidate-22-18-apr-2021)
+- [Release Candidate 21 (14 Mar 2021)](#release-candidate-21-14-mar-2021)
+- [Release Candidate 20 (30 Jan 2021)](#release-candidate-20-30-jan-2021)
+- [Release Candidate 19 (11 Jan 2021)](#release-candidate-19-11-jan-2021)
+- [Release Candidate 18 (03 Dec 2020)](#release-candidate-18-03-dec-2020)
 - [Release Candidate 17 (17 Oct 2020)](#release-candidate-17-17-oct-2020)
 - [Release Candidate 16 (07 Sep 2020)](#release-candidate-16-07-sep-2020)
 - [Release Candidate 15 (01 Aug 2020)](#release-candidate-15-01-aug-2020)
@@ -21,14 +26,324 @@
 - [Release Candidate 2 (29 Sep 2019)](#release-candidate-2-29-sep-2019)
 - [Release Candidate 1 (26 Sep 2019)](#release-candidate-1-26-sep-2019)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Release Candidate 18 (TBD)
+## Release Candidate 26 (TBD)
 
 #### Additions
+* Diamonds can now be ground into Carbon using a Grind Stone
+* Deepslate ores can now be doubled using an Ore Crusher
+* Tridents can now be crafted
+* The Industrial Miner can now mine up to the minimum world limit (previously only until y=0)
+* (API) Added SlimefunItemSpawnEvent and ItemSpawnReason
+* Added "Amethyst Block -> 4 Amethyst Shards" recipe to the Grind Stone
+* Added an option to the IndustrialMiner to configure if they can mine deepslate ores
+
+#### Changes
+
+#### Fixes
+* Fixed #2966
+* Fixed Auto-Crafters bypassing the `doLimitedCrafting` gamerule
+
+## Release Candidate 25 (20 Jun 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#25
+
+#### Additions
+* Added "4 Charcoal -> 1 Coal" recipe to the Compressor
+* Added a startup warning for when CS-CoreLib is still installed
+* (API) Added WeaponUseHandler
+* Added support for Minecraft 1.17
+* Added "Deepslate -> Lava" recipe to the Crucible
+* Added "Cobbled Deepslate -> Lava" recipe to the Crucible
+* Added "Tuff -> Lava" recipe to the Crucible
+* Added "Copper Ingot -> Copper Dust" recipe to the Ingot Pulverizer
+* Added Goats as a milk source for the Produce Collector
+* Added "Raw Iron -> Iron Dust" recipe to the Ore Crusher
+* Added "Raw Gold -> Gold Dust" recipe to the Ore Crusher
+* Added "Raw Copper -> Copper Dust" recipe to the Ore Crusher
+* Debug Fish can now read Slimefun Tags for vanilla blocks
+* The Icy Bow now gives a freezing effect on 1.17
+
+#### Changes
+* (API) Removed `SlimefunItem#getID()` (renamed to `SlimefunItem#getId()`)
+* (API) Removed AsyncGeneratorProcessCompleteEvent
+* (API) Removed AsyncMachineProcessCompleteEvent
+* (API) Removed AsyncReactorProcessCompleteEvent
+
+#### Fixes
+* Fixed #3105
+* Fixed #3116
+
+## Release Candidate 24 (03 Jun 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#24
+
+#### Additions
+* (API) Added AsyncMachineOperationFinishEvent
+* The speed of the Ancient Altar can now be configured in the `Items.yml` file
+* The message "You do not have enough knowledge to understand this" now includes the name of the item you need to research.
+
+#### Changes
+* (API) Refactored "Machine Process" API
+* (API) Deprecated AsyncGeneratorProcessCompleteEvent
+* (API) Deprecated AsyncMachineProcessCompleteEvent
+* (API) Deprecated AsyncReactorProcessCompleteEvent
+* Error-Reports now show the date and time they were generated at
+* Some performance optimizations to Cargo networks
+
+#### Fixes
+* Fixed #3064
+* Fixed #2964
+* Fixed #2979
+* Fixed a permissions issue with `/sf charge`
+* Fixed #3053
+* Fixed #3075
+* Fixed recipe types showing missing string message
+* Fixed #3084
+* Fixed #3085
+* Fixed #3088
+* Fixed #3087
+* Fixed #3091
+* Fixed #3086
+* Fixed #3093
+* Fixed #3095
+
+## Release Candidate 23 (19 May 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#23
+
+#### Additions
+* Added "Quartz Block -> 4 Quartz" recipe to Grind Stone
+* Added "8 Coal Blocks -> 9 Carbon" recipe to Compressor
+* Added "8 Coal Blocks -> 9 Carbon" recipe to Carbon Press
+* Added "Magical Lump Tier 2 -> 4 Magical Lump Tier 1" recipe to Grind Stone
+* Added "Magical Lump Tier 3 -> 4 Magical Lump Tier 2" recipe to Grind Stone
+* Added "Ender Lump Tier 2 -> 4 Ender Lump Tier 1" recipe to Grind Stone
+* Added "Ender Lump Tier 3 -> 4 Ender Lump Tier 2" recipe to Grind Stone
+* Added Tier 2 Auto-Enchanter
+* Added Tier 2 Auto-Disenchanter
+* (API) Added AsyncAutoEnchanterProcessEvent
+* (API) Added Category#setTier() to modify a category's position in the guide
+* Added the ability to disable auto (dis)enchanting with a lore - `use-ignored-lores` & `ignored-lores` in Items.yml
+* Added an option to turn off the "researching animation" in the `config.yml`
+* Added the option to turn off the "researching animation" within your Slimefun Guide
+* Added Portable Teleporter
+
+#### Changes
+* Renamed "Solar Panel" to "Photovoltaic Cell" to avoid confusions with solar generators
+* Photovoltaic Cells can no longer be placed
+* Batteries can no longer be placed
+* Tin Cans can no longer be placed
+* Magical Glass can no longer be placed
+* (API) Removed deprecated "SlimefunBlockHandler"
+* Removed Automated Crafting Chamber
+* Memory and performance improvements for Cargo and Energy networks
+
+#### Fixes
+* Fixed #2987
+* Fixed #2989
+* Fixed #2977
+* Fixed #2999
+* Fixed #2593
+* Fixed #2937
+* Fixed #2927
+* Fixed #3007
+* Fixed #3012
+* Fixed #3013
+* Fixed #3027
+* Fixed #2978
+* Fixed #3041
+* Fixed #3036
+* Possibly fixed #2927
+* Fixed #3060
+
+## Release Candidate 22 (18 Apr 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#22
+
+#### Additions
+* Added Vanilla Auto-Crafter
+* Added Enhanced Auto-Crafter
+* Added "Smart-Filling" mode to Cargo Input nodes
+* Added "Netherite Ingot -> Netherite Block" recipe to Electric Press
+* Added "Slimeballs -> Slime Block" recipe to Electric Press
+* Added Armor Forge Auto-Crafter
+* Auto-Crafters can now be turned on and off
+* Added Produce Collector to automate Milk and Mushroom Stew
+* Added a new message when constructing a Multiblock successfully
+* Added Crafting Motor
+* Block Placers can now place down cake
+* Added support for the "FunnyGuilds" plugin
+* Added "magma cream -> slime ball" recipe to the Freezer
+* Added "2 magma blocks -> slime block" recipe to the Freezer
+* Added configurable enchantment level limit for both auto enchanter and auto disenchanter
+* (API) Added AutoEnchantEvent
+
+#### Changes
+* Changed item order in guide for the Villager Rune and Nether Goo (All runes are now grouped together)
+* Ancient Pedestals can now be found under "Magical Gadgets"
+* Removed all functionality from the old Automated Crafting Chamber
+* Changed Cargo Motor texture
+* Lowered "Magma block -> Sulfate" recipe to only require 1 magma block
+* Small performance improvements
+
+#### Fixes
+* Fixed #1161
+* Fixed #2862
+* Fixed #2887
+* Fixed items getting deleted when breaking enhanced furnaces
+* Fixed #2895
+* Fixed #2896
+* Fixed #2899
+* Fixed #2906
+* Fixed #2903
+* Fixed #2913
+* Fixed #2914
+* Fixed Auto-Crafters swallowing buckets when crafting cake
+* Fixed Multimeter not working on Auto-Crafters
+* Fixed #2650
+* Fixed Slimefun items applying damage to items with an `unbreakable` tag
+* Fixed #2930
+* Fixed #2926
+* Fixed Grappling Hook vanishing in creative mode
+* Fixed #2944
+* Fixed #2837
+* Fixed #2942
+
+## Release Candidate 21 (14 Mar 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#21
+
+#### Additions
+* Nether Wart Blocks can now be turned into Nether Warts using a Grind Stone
+* Added an option to allow Talismans to send their notifications via the Actionbar
+* (API) Added support for nested Categories
+* (API) Added ExplosiveToolBreakBlocksEvent
+* Added an option to enable/disable water in the nether via a crucible
+* /sf versions now shows the Java version and some useful tooltips
+
+#### Changes
+* Deprecated Automatic Crafting Chamber
+* Performance Improvements and Optimizations for Cobblestone/Stone/Basalt generators and mining androids
+* Androids operating on a Cobblestone/Stone/Basalt generator now work faster
+* (API) Improvements to the BlockBreakHandler
+* (API) Deprecated SlimefunBlockHandler
+* (API) Improved ItemSetting API and error handling
+
+#### Fixes
+* Fixed #2794
+* Fixed #2793
+* Fixed #2809
+* Fixed a small exception which gets thrown when Slimefun is disabled due to an invalid environment
+* Fixed #2810
+* Fixed #2804
+* Fixed #2817
+* Fixed exceptions with inventories not being printed using the logger of the addon that caused it
+* Fixed #2818
+* Fixed a duplication glitch with the Woodcutter Android
+* Fixed #2839
+* Fixed #2849
+* Fixed #2851
+* Fixed #2852
+* Fixed some issues with the Book Binder
+* Fixed #2805
+* Fixed #2861
+* Fixed #2856
+* Fixed #2876
+* Fixed #2877
+* Fixed #2878
+* Fixed Mining Androids being broken
+* Fixed #2883
+
+## Release Candidate 20 (30 Jan 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#20
+
+#### Additions
+* Added a new language: Bulgarian
+* Added a new language: Hebrew
+* (API) Added AsyncProfileLoadEvent
+* Added Talisman of the Wise
+* Added Book Binder
+* Added Tier 3 Electric Ore Grinder
+
+#### Changes
+* Massive performance improvements to holograms/armorstands
+* Slimefun no longer requires CS-CoreLib to be installed
+
+#### Fixes
+* Fixed elevator floor order
+* Fixed "block-explosions" (e.g. beds in Nether) not properly respecting explosion-resistant blocks
+* Fixed #2560
+* Fixed #2449
+* Fixed #2511
+* Fixed #2636
+* Fixed a threading issue related to BlockStates and persistent data
+* Fixed an error when the server was shutting down
+* Fixed #2721
+* Fixed #2662
+* Fixed #2728
+* Fixed some backpack opening issues
+* Fixed Infused Hopper picking up items with a max pickup delay
+* Fixed duplication issues related to holograms/armorstands
+* Fixed #2754
+* Fixed machines not respecting max size from inventories
+* Fixed #2761
+* Fixed #2460
+* Fixed #2760
+* Fixed #2771
+* Fixed placeholders that did not get loaded yet not having a label
+* Fixed #2679
+
+## Release Candidate 19 (11 Jan 2021)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#19
+
+#### Additions
+* Added Bee Armor (1.15+ only)
+* (API) Added AndroidFarmEvent
+
+#### Changes
+* Performance optimizations for Cargo networks
+* Removed an old version of bStats
+* General performance improvements
+* CraftBukkit is officially no longer supported, Slimefun will now be disabled on old builds of CraftBukkit
+* Removed the deprecated ItemManipulationAPI for BlockMenus
+* Removed the "Written Book" variant of the Slimefun Guide
+* The Elevator has an Inventory menu now
+
+#### Fixes
+* Fixed a couple of compatibility issues with ItemsAdder
+* Fixed #2575
+* Fixed ghost blocks to some extent (ghost blocks will now drop and be replaced)
+* Fixed #2636 (hotfix)
+* Fixed #2647
+* Fixed #2664
+* Fixed #2655
+* Fixed /sf timings --verbose not working correctly
+* Fixed #2675
+
+## Release Candidate 18 (03 Dec 2020)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#18
+
+#### Additions
+* The Smelters Pick now also works on Ancient Debris
+* (API) Added PlayerPreResearchEvent
+* Added a config option to disable network visualizations
+* (API) Added CoolerFeedPlayerEvent
+* Added a config option to delete excess cargo network items
+* Added an item setting to configure the Wind Staff velocity
+* Added an item setting to the Infused Hopper to toggle it with redstone
+* Added an item setting to prevent Reinforced Spawners from being changed by Spawn Eggs
+* Added 4 bricks -> 1 brick block recipe to the Electric Press
 
 #### Changes
 * Removed 1.13 support
+* Cooling Units can no longer be placed down
+* Heating Coils can no longer be placed down
+* Electric Motors can no longer be placed down
+* Cargo Motors can no longer be placed down
+* Magnets can no longer be placed down
+* Electromagnets can no longer be placed down
+* Performance improvements to Cargo network visualizations
+* General performance improvements
+* Improved performance for radioactive items
+* Memory/GC improvements for the profiler
+* Performance improvements for the Fluid Pump
+* Removed EmeraldEnchants integration
+* Memory and performance improvements for ticking blocks
 
 #### Fixes
 * Fixed #2448
@@ -38,8 +353,36 @@
 * Fixed a missing slot in the contributors menu
 * Fixed color codes in script downloading screen
 * Fixed #2505
+* Fixed contributors not showing correctly
+* Fixed #2469
+* Fixed #2509
+* Fixed #2499
+* Fixed #2527
+* Fixed #2519
+* Fixed #2517
+* Fixed Magician Talisman sometimes drawing invalid enchantments
+* Fixed id conflicts for external Enchantment sources (e.g. plugins) for the Magician Talisman settings
+* Fixed network visualizers spawning particles for other player heads
+* Fixed #2418
+* Fixed #2446
+* Fixed CoreProtect not recognizing Slimefun blocks getting broken
+* Fixed #2447
+* Fixed #2558
+* Fixed a duplication bug with the Block Placer
+* Fixed Slimefun Guide Settings showing "last activity" as a negative number
+* Fixed Armor Stands getting damaged/pushed by Explosive Bow
+* Fixed Sword of Beheading dropping Zombie/Skeleton Skulls from Zombie/Skeleton subvariants
+* Fixed #2518
+* Fixed #2421
+* Fixed #2574
+* Fixed color in android script downloading screen
+* Fixed #2576
+* Fixed #2496
+* Fixed #2585
+* Fixed #2583
 
 ## Release Candidate 17 (17 Oct 2020)
+https://thebusybiscuit.github.io/builds/TheBusyBiscuit/Slimefun4/stable/#17
 
 #### Additions
 * Added /sf charge

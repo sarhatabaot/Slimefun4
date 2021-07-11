@@ -4,17 +4,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.Nonnull;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import io.github.thebusybiscuit.cscorelib2.math.DoubleHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.gadgets.JetBoots;
+import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 
-public class JetBootsTask extends PlayerTask {
+public class JetBootsTask extends AbstractPlayerTask {
 
     private static final float COST = 0.075F;
 
@@ -31,7 +30,7 @@ public class JetBootsTask extends PlayerTask {
             return;
         }
 
-        double accuracy = DoubleHandler.fixDouble(boots.getSpeed() - 0.7);
+        double accuracy = NumberUtils.reparseDouble(boots.getSpeed() - 0.7);
 
         if (boots.removeItemCharge(p.getInventory().getBoots(), COST)) {
             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_TNT_PRIMED, (float) 0.25, 1);
@@ -43,7 +42,7 @@ public class JetBootsTask extends PlayerTask {
 
             p.setVelocity(vector);
         } else {
-            Bukkit.getScheduler().cancelTask(id);
+            cancel();
         }
     }
 }

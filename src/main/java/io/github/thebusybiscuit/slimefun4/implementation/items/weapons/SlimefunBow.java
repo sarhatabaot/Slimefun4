@@ -1,5 +1,8 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.weapons;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.entity.Arrow;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,7 +22,8 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
  */
 public abstract class SlimefunBow extends SlimefunItem {
 
-    public SlimefunBow(Category category, SlimefunItemStack item, ItemStack[] recipe) {
+    @ParametersAreNonnullByDefault
+    protected SlimefunBow(Category category, SlimefunItemStack item, ItemStack[] recipe) {
         super(category, item, RecipeType.MAGIC_WORKBENCH, recipe);
     }
 
@@ -29,6 +33,7 @@ public abstract class SlimefunBow extends SlimefunItem {
         addItemHandler(onShoot());
     }
 
+    @Nonnull
     public abstract BowShootHandler onShoot();
 
 }

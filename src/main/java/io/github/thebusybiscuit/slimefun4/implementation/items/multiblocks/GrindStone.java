@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.thebusybiscuit.slimefun4.api.MinecraftVersion;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -27,6 +29,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 public class GrindStone extends MultiBlockMachine {
 
+    @ParametersAreNonnullByDefault
     public GrindStone(Category category, SlimefunItemStack item) {
         super(category, item, new ItemStack[] { null, null, null, null, new ItemStack(Material.OAK_FENCE), null, null, new CustomItem(Material.DISPENSER, "Dispenser (Facing up)"), null }, BlockFace.SELF);
     }
@@ -71,6 +74,32 @@ public class GrindStone extends MultiBlockMachine {
 
         recipes.add(new ItemStack(Material.PRISMARINE));
         recipes.add(new ItemStack(Material.PRISMARINE_SHARD, 4));
+
+        recipes.add(new ItemStack(Material.NETHER_WART_BLOCK));
+        recipes.add(new ItemStack(Material.NETHER_WART, 9));
+
+        recipes.add(new ItemStack(Material.QUARTZ_BLOCK));
+        recipes.add(new ItemStack(Material.QUARTZ, 4));
+
+        if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_17)) {
+            recipes.add(new ItemStack(Material.AMETHYST_BLOCK));
+            recipes.add(new ItemStack(Material.AMETHYST_SHARD, 4));
+        }
+
+        recipes.add(SlimefunItems.MAGIC_LUMP_2);
+        recipes.add(new SlimefunItemStack(SlimefunItems.MAGIC_LUMP_1, 4));
+
+        recipes.add(SlimefunItems.MAGIC_LUMP_3);
+        recipes.add(new SlimefunItemStack(SlimefunItems.MAGIC_LUMP_2, 4));
+
+        recipes.add(SlimefunItems.ENDER_LUMP_2);
+        recipes.add(new SlimefunItemStack(SlimefunItems.ENDER_LUMP_1, 4));
+
+        recipes.add(SlimefunItems.ENDER_LUMP_3);
+        recipes.add(new SlimefunItemStack(SlimefunItems.ENDER_LUMP_2, 4));
+
+        recipes.add(new ItemStack(Material.DIAMOND));
+        recipes.add(new SlimefunItemStack(SlimefunItems.CARBON, 4));
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,14 +18,14 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.api.network.Network;
 import io.github.thebusybiscuit.slimefun4.api.network.NetworkComponent;
+import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.utils.holograms.SimpleHologram;
+import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 /**
  * The {@link CargoNet} is a type of {@link Network} which deals with {@link ItemStack} transportation.
- * It is also an extension of {@link ChestTerminalNetwork} which provides methods to deal
+ * It is also an extension of {@link AbstractItemNetwork} which provides methods to deal
  * with the addon ChestTerminal.
  * 
  * @author meiamsome
@@ -37,7 +38,7 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
  * @author DNx5
  *
  */
-public class CargoNet extends ChestTerminalNetwork {
+public class CargoNet extends AbstractItemNetwork implements HologramOwner {
 
     private static final int RANGE = 5;
     private static final int TICK_DELAY = SlimefunPlugin.getCfg().getInt("networks.cargo-ticker-delay");
@@ -48,10 +49,12 @@ public class CargoNet extends ChestTerminalNetwork {
     protected final Map<Location, Integer> roundRobin = new HashMap<>();
     private int tickDelayThreshold = 0;
 
+    @Nullable
     public static CargoNet getNetworkFromLocation(@Nonnull Location l) {
         return SlimefunPlugin.getNetworkManager().getNetworkFromLocation(l, CargoNet.class).orElse(null);
     }
 
+    @Nonnull
     public static CargoNet getNetworkFromLocationOrCreate(@Nonnull Location l) {
         Optional<CargoNet> cargoNetwork = SlimefunPlugin.getNetworkManager().getNetworkFromLocation(l, CargoNet.class);
 
@@ -75,6 +78,11 @@ public class CargoNet extends ChestTerminalNetwork {
     }
 
     @Override
+    public String getId() {
+        return "CARGO_NETWORK";
+    }
+
+    @Override
     public int getRange() {
         return RANGE;
     }
@@ -88,19 +96,19 @@ public class CargoNet extends ChestTerminalNetwork {
         }
 
         switch (id) {
-        case "CARGO_MANAGER":
-            return NetworkComponent.REGULATOR;
-        case "CARGO_NODE":
-            return NetworkComponent.CONNECTOR;
-        case "CARGO_NODE_INPUT":
-        case "CARGO_NODE_OUTPUT":
-        case "CARGO_NODE_OUTPUT_ADVANCED":
-        case "CT_IMPORT_BUS":
-        case "CT_EXPORT_BUS":
-        case "CHEST_TERMINAL":
-            return NetworkComponent.TERMINUS;
-        default:
-            return null;
+            case "CARGO_MANAGER":
+                return NetworkComponent.REGULATOR;
+            case "CARGO_NODE":
+                return NetworkComponent.CONNECTOR;
+            case "CARGO_NODE_INPUT":
+            case "CARGO_NODE_OUTPUT":
+            case "CARGO_NODE_OUTPUT_ADVANCED":
+            case "CT_IMPORT_BUS":
+            case "CT_EXPORT_BUS":
+            case "CHEST_TERMINAL":
+                return NetworkComponent.TERMINUS;
+            default:
+                return null;
         }
     }
 
@@ -119,40 +127,40 @@ public class CargoNet extends ChestTerminalNetwork {
         if (to == NetworkComponent.TERMINUS) {
             String id = BlockStorage.checkID(l);
             switch (id) {
-            case "CARGO_NODE_INPUT":
-                inputNodes.add(l);
-                break;
-            case "CARGO_NODE_OUTPUT":
-            case "CARGO_NODE_OUTPUT_ADVANCED":
-                outputNodes.add(l);
-                break;
-            case "CHEST_TERMINAL":
-                terminals.add(l);
-                break;
-            case "CT_IMPORT_BUS":
-                imports.add(l);
-                break;
-            case "CT_EXPORT_BUS":
-                exports.add(l);
-                break;
-            default:
-                break;
+                case "CARGO_NODE_INPUT":
+                    inputNodes.add(l);
+                    break;
+                case "CARGO_NODE_OUTPUT":
+                case "CARGO_NODE_OUTPUT_ADVANCED":
+                    outputNodes.add(l);
+                    break;
+                case "CHEST_TERMINAL":
+                    terminals.add(l);
+                    break;
+                case "CT_IMPORT_BUS":
+                    imports.add(l);
+                    break;
+                case "CT_EXPORT_BUS":
+                    exports.add(l);
+                    break;
+                default:
+                    break;
             }
         }
     }
 
-    public void tick(Block b) {
+    public void tick(@Nonnull Block b) {
         if (!regulator.equals(b.getLocation())) {
-            SimpleHologram.update(b, "&4Multiple Cargo Regulators connected");
+            updateHologram(b, "&4Multiple Cargo Regulators connected");
             return;
         }
 
         super.tick();
 
         if (connectorNodes.isEmpty() && terminusNodes.isEmpty()) {
-            SimpleHologram.update(b, "&cNo Cargo Nodes found");
+            updateHologram(b, "&cNo Cargo Nodes found");
         } else {
-            SimpleHologram.update(b, "&7Status: &a&lONLINE");
+            updateHologram(b, "&7Status: &a&lONLINE");
 
             // Skip ticking if the threshold is not reached. The delay is not same as minecraft tick,
             // but it's based on 'custom-ticker-delay' config.
@@ -182,7 +190,8 @@ public class CargoNet extends ChestTerminalNetwork {
         }
     }
 
-    private Map<Location, Integer> mapInputNodes(Set<Location> chestTerminalNodes) {
+    @Nonnull
+    private Map<Location, Integer> mapInputNodes(@Nonnull Set<Location> chestTerminalNodes) {
         Map<Location, Integer> inputs = new HashMap<>();
 
         for (Location node : inputNodes) {
@@ -198,7 +207,8 @@ public class CargoNet extends ChestTerminalNetwork {
         return inputs;
     }
 
-    private Map<Integer, List<Location>> mapOutputNodes(Set<Location> chestTerminalOutputs) {
+    @Nonnull
+    private Map<Integer, List<Location>> mapOutputNodes(@Nonnull Set<Location> chestTerminalOutputs) {
         Map<Integer, List<Location>> output = new HashMap<>();
 
         List<Location> list = new LinkedList<>();
@@ -237,7 +247,7 @@ public class CargoNet extends ChestTerminalNetwork {
 
     /**
      * This method returns the frequency a given node is set to.
-     * Should there be an {@link Exception} to this method it will fall back to zero in
+     * Should there be invalid data this method it will fall back to zero in
      * order to preserve the integrity of the {@link CargoNet}.
      * 
      * @param node
@@ -245,13 +255,16 @@ public class CargoNet extends ChestTerminalNetwork {
      * 
      * @return The frequency of the given node
      */
-    private static int getFrequency(Location node) {
-        try {
-            String str = BlockStorage.getLocationInfo(node).getString("frequency");
-            return str == null ? 0 : Integer.parseInt(str);
-        } catch (Exception x) {
-            Slimefun.getLogger().log(Level.SEVERE, x, () -> "An Error occurred while parsing a Cargo Node Frequency (" + node.getWorld().getName() + " - " + node.getBlockX() + "," + node.getBlockY() + "," + +node.getBlockZ() + ")");
+    private static int getFrequency(@Nonnull Location node) {
+        String frequency = BlockStorage.getLocationInfo(node, "frequency");
+
+        if (frequency == null) {
             return 0;
+        } else if (!PatternUtils.NUMERIC.matcher(frequency).matches()) {
+            SlimefunPlugin.logger().log(Level.SEVERE, () -> "Failed to parse a Cargo Node Frequency (" + node.getWorld().getName() + " - " + node.getBlockX() + ',' + node.getBlockY() + ',' + node.getBlockZ() + "): " + frequency);
+            return 0;
+        } else {
+            return Integer.parseInt(frequency);
         }
     }
 }

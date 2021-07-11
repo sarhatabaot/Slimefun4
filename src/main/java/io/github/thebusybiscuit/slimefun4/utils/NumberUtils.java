@@ -1,16 +1,20 @@
 package io.github.thebusybiscuit.slimefun4.utils;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
+
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 
 /**
  * This class contains various utilities related to numbers and number formatting.
@@ -23,8 +27,9 @@ public final class NumberUtils {
 
     /**
      * This is our {@link DecimalFormat} for decimal values.
+     * This instance is not thread-safe!
      */
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
     /**
      * We do not want any instance of this to be created.
@@ -42,9 +47,35 @@ public final class NumberUtils {
      * 
      * @return The formatted String
      */
-    @Nonnull
-    public static String formatBigNumber(int number) {
+    public static @Nonnull String formatBigNumber(int number) {
         return NumberFormat.getNumberInstance(Locale.US).format(number);
+    }
+
+    public static @Nonnull String getCompactDouble(double value) {
+        if (value < 0) {
+            // Negative numbers are a special case
+            return '-' + getCompactDouble(-value);
+        }
+
+        if (value < 1000.0) {
+            // Below 1K
+            return DECIMAL_FORMAT.format(value);
+        } else if (value < 1000000.0) {
+            // Thousands
+            return DECIMAL_FORMAT.format(value / 1000.0) + 'K';
+        } else if (value < 1000000000.0) {
+            // Million
+            return DECIMAL_FORMAT.format(value / 1000000.0) + 'M';
+        } else if (value < 1000000000000.0) {
+            // Billion
+            return DECIMAL_FORMAT.format(value / 1000000000.0) + 'B';
+        } else if (value < 1000000000000000.0) {
+            // Trillion
+            return DECIMAL_FORMAT.format(value / 1000000000000.0) + 'T';
+        } else {
+            // Quadrillion
+            return DECIMAL_FORMAT.format(value / 1000000000000000.0) + 'Q';
+        }
     }
 
     /**
@@ -56,8 +87,7 @@ public final class NumberUtils {
      * 
      * @return The {@link LocalDateTime} for the given input
      */
-    @Nonnull
-    public static LocalDateTime parseGitHubDate(@Nonnull String date) {
+    public static @Nonnull LocalDateTime parseGitHubDate(@Nonnull String date) {
         Validate.notNull(date, "Provided date was null");
         return LocalDateTime.parse(date.substring(0, date.length() - 1));
     }
@@ -72,8 +102,7 @@ public final class NumberUtils {
      * 
      * @return A representative {@link ChatColor}
      */
-    @Nonnull
-    public static ChatColor getColorFromPercentage(float percentage) {
+    public static @Nonnull ChatColor getColorFromPercentage(float percentage) {
         if (percentage < 16.0F) {
             return ChatColor.DARK_RED;
         } else if (percentage < 32.0F) {
@@ -103,10 +132,32 @@ public final class NumberUtils {
      * 
      * @return The elapsed time as a {@link String}
      */
-    @Nonnull
-    public static String getElapsedTime(@Nonnull LocalDateTime date) {
-        Validate.notNull(date, "Provided date was null");
-        long hours = Duration.between(date, LocalDateTime.now()).toHours();
+    public static @Nonnull String getElapsedTime(@Nonnull LocalDateTime date) {
+        return getElapsedTime(LocalDateTime.now(), date);
+    }
+
+    /**
+     * This returns the elapsed time between the two given {@link LocalDateTime LocalDateTimes}.
+     * The output will be nicely formatted based on the elapsed hours or days between the
+     * given {@link LocalDateTime LocalDateTime}.
+     * 
+     * If a {@link LocalDateTime} from today and yesterday (exactly 24h apart) was passed it
+     * will return {@code "1d"}.
+     * One hour later it will read {@code "1d 1h"}. For values smaller than an hour {@code "< 1h"}
+     * will be returned instead.
+     * 
+     * @param current
+     *            The current {@link LocalDateTime}.
+     * @param priorDate
+     *            The {@link LocalDateTime} in the past.
+     * 
+     * @return The elapsed time as a {@link String}
+     */
+    public static @Nonnull String getElapsedTime(@Nonnull LocalDateTime current, @Nonnull LocalDateTime priorDate) {
+        Validate.notNull(current, "Provided current date was null");
+        Validate.notNull(priorDate, "Provided past date was null");
+
+        long hours = Duration.between(priorDate, current).toHours();
 
         if (hours == 0) {
             return "< 1h";
@@ -119,8 +170,7 @@ public final class NumberUtils {
         }
     }
 
-    @Nonnull
-    public static String getTimeLeft(int seconds) {
+    public static @Nonnull String getTimeLeft(int seconds) {
         String timeleft = "";
 
         int minutes = (int) (seconds / 60L);
@@ -133,16 +183,27 @@ public final class NumberUtils {
         return timeleft + seconds + "s";
     }
 
+    /**
+     * This method parses a {@link String} into an {@link Integer}.
+     * If the {@link String} could not be parsed correctly, the provided
+     * default value will be returned instead.
+     * 
+     * @param str
+     *            The {@link String} to parse
+     * @param defaultValue
+     *            The default value for when the {@link String} could not be parsed
+     * 
+     * @return The resulting {@link Integer}
+     */
     public static int getInt(@Nonnull String str, int defaultValue) {
         if (PatternUtils.NUMERIC.matcher(str).matches()) {
             return Integer.parseInt(str);
+        } else {
+            return defaultValue;
         }
-
-        return defaultValue;
     }
 
-    @Nonnull
-    public static String getAsMillis(long nanoseconds) {
+    public static @Nonnull String getAsMillis(long nanoseconds) {
         if (nanoseconds == 0) {
             return "0ms";
         }
@@ -157,8 +218,12 @@ public final class NumberUtils {
         }
     }
 
-    public static String roundDecimalNumber(double number) {
+    public static @Nonnull String roundDecimalNumber(double number) {
         return DECIMAL_FORMAT.format(number);
+    }
+
+    public static double reparseDouble(double number) {
+        return Double.valueOf(roundDecimalNumber(number));
     }
 
     public static long getLong(@Nullable Long value, long defaultValue) {
@@ -183,6 +248,8 @@ public final class NumberUtils {
      *            The value to clamp
      * @param max
      *            The maximum value
+     * 
+     * @return The clamped value
      */
     public static int clamp(int min, int value, int max) {
         if (value < min) {
@@ -191,6 +258,26 @@ public final class NumberUtils {
             return max;
         } else {
             return value;
+        }
+    }
+
+    public static int getJavaVersion() {
+        String javaVer = System.getProperty("java.version");
+
+        if (javaVer.startsWith("1.")) {
+            javaVer = javaVer.substring(2);
+        }
+
+        // If it's like 11.0.1.3 or 8.0_275
+        if (javaVer.indexOf('.') != -1) {
+            javaVer = javaVer.substring(0, javaVer.indexOf('.'));
+        }
+
+        if (PatternUtils.NUMERIC.matcher(javaVer).matches()) {
+            return Integer.parseInt(javaVer);
+        } else {
+            SlimefunPlugin.logger().log(Level.SEVERE, "Error: Cannot identify Java version - {0}", javaVer);
+            return 0;
         }
     }
 }

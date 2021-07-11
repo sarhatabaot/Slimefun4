@@ -3,10 +3,13 @@ package io.github.thebusybiscuit.slimefun4.implementation.items.electric.machine
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotHopperable;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -22,10 +25,11 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
  * @author Linox
  *
  */
-public class AutoDrier extends AContainer implements RecipeDisplayItem {
+public class AutoDrier extends AContainer implements RecipeDisplayItem, NotHopperable {
 
     private List<ItemStack> recipeList;
 
+    @ParametersAreNonnullByDefault
     public AutoDrier(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
@@ -99,21 +103,6 @@ public class AutoDrier extends AContainer implements RecipeDisplayItem {
     @Override
     public List<ItemStack> getDisplayRecipes() {
         return recipeList;
-    }
-
-    @Override
-    public int getEnergyConsumption() {
-        return 5;
-    }
-
-    @Override
-    public int getSpeed() {
-        return 1;
-    }
-
-    @Override
-    public int getCapacity() {
-        return 128;
     }
 
     @Override

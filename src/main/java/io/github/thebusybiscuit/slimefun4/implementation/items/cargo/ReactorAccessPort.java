@@ -1,5 +1,9 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,8 +12,11 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.cscorelib2.protection.ProtectableAction;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.networks.cargo.CargoNet;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.reactors.Reactor;
 import io.github.thebusybiscuit.slimefun4.implementation.items.misc.CoolantCell;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -23,6 +30,15 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
+/**
+ * The {@link ReactorAccessPort} is a block which acts as an interface
+ * between a {@link Reactor} and a {@link CargoNet}.
+ * Any item placed into the port will get transferred to the {@link Reactor}.
+ * 
+ * @author TheBusyBiscuit
+ * @author AlexLander123
+ *
+ */
 public class ReactorAccessPort extends SlimefunItem {
 
     private static final int INFO_SLOT = 49;
@@ -32,8 +48,11 @@ public class ReactorAccessPort extends SlimefunItem {
     private final int[] inputBorder = { 15, 16, 17, 24, 26, 33, 35, 42, 44, 51, 52, 53 };
     private final int[] outputBorder = { 30, 31, 32, 39, 41, 48, 50 };
 
+    @ParametersAreNonnullByDefault
     public ReactorAccessPort(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
+
+        addItemHandler(onBreak());
 
         new BlockMenuPreset(getId(), "&2Reactor Access Port") {
 
@@ -44,7 +63,7 @@ public class ReactorAccessPort extends SlimefunItem {
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.ACCESS_INVENTORIES);
+                return p.hasPermission("slimefun.inventory.bypass") || SlimefunPlugin.getProtectionManager().hasPermission(p, b.getLocation(), ProtectableAction.INTERACT_BLOCK);
             }
 
             @Override
@@ -93,59 +112,59 @@ public class ReactorAccessPort extends SlimefunItem {
                 }
             }
         };
-
-        registerBlockHandler(getId(), (p, b, tool, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
-
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), getFuelSlots());
-                inv.dropItems(b.getLocation(), getCoolantSlots());
-                inv.dropItems(b.getLocation(), getOutputSlots());
-            }
-
-            return true;
-        });
     }
 
-    private void constructMenu(BlockMenuPreset preset) {
-        for (int i : background) {
-            preset.addItem(i, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
-        }
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
 
-        for (int i : fuelBorder) {
-            preset.addItem(i, new CustomItem(new ItemStack(Material.LIME_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
-        }
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                BlockMenu inv = BlockStorage.getInventory(b);
 
-        for (int i : inputBorder) {
-            preset.addItem(i, new CustomItem(new ItemStack(Material.CYAN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
-        }
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), getFuelSlots());
+                    inv.dropItems(b.getLocation(), getCoolantSlots());
+                    inv.dropItems(b.getLocation(), getOutputSlots());
+                }
+            }
+        };
+    }
 
-        for (int i : outputBorder) {
-            preset.addItem(i, new CustomItem(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), " "), ChestMenuUtils.getEmptyClickHandler());
-        }
+    private void constructMenu(@Nonnull BlockMenuPreset preset) {
+        preset.drawBackground(ChestMenuUtils.getBackground(), background);
+
+        preset.drawBackground(new CustomItem(Material.LIME_STAINED_GLASS_PANE, " "), fuelBorder);
+        preset.drawBackground(new CustomItem(Material.CYAN_STAINED_GLASS_PANE, " "), inputBorder);
+        preset.drawBackground(new CustomItem(Material.GREEN_STAINED_GLASS_PANE, " "), outputBorder);
 
         preset.addItem(1, new CustomItem(SlimefunItems.URANIUM, "&7Fuel Slot", "", "&rThis Slot accepts radioactive Fuel such as:", "&2Uranium &ror &aNeptunium"), ChestMenuUtils.getEmptyClickHandler());
         preset.addItem(22, new CustomItem(SlimefunItems.PLUTONIUM, "&7Byproduct Slot", "", "&rThis Slot contains the Reactor's Byproduct", "&rsuch as &aNeptunium &ror &7Plutonium"), ChestMenuUtils.getEmptyClickHandler());
         preset.addItem(7, new CustomItem(SlimefunItems.REACTOR_COOLANT_CELL, "&bCoolant Slot", "", "&rThis Slot accepts Coolant Cells", "&4Without any Coolant Cells, your Reactor", "&4will explode"), ChestMenuUtils.getEmptyClickHandler());
     }
 
+    @Nonnull
     public int[] getInputSlots() {
         return new int[] { 19, 28, 37, 25, 34, 43 };
     }
 
+    @Nonnull
     public int[] getFuelSlots() {
         return new int[] { 19, 28, 37 };
     }
 
+    @Nonnull
     public int[] getCoolantSlots() {
         return new int[] { 25, 34, 43 };
     }
 
+    @Nonnull
     public static int[] getOutputSlots() {
         return new int[] { 40 };
     }
 
-    private BlockMenu getReactor(Location l) {
+    @Nullable
+    private BlockMenu getReactor(@Nonnull Location l) {
         Location location = new Location(l.getWorld(), l.getX(), l.getY() - 3, l.getZ());
         SlimefunItem item = BlockStorage.check(location.getBlock());
 

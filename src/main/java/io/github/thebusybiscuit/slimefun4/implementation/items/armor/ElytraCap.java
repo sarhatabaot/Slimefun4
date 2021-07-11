@@ -1,8 +1,10 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.armor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.thebusybiscuit.slimefun4.utils.UnbreakingAlgorithm;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -12,7 +14,7 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.DamageableItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectiveArmor;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.ElytraCrashListener;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.ElytraImpactListener;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -22,7 +24,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
  *
  * @author Seggan
  *
- * @see ElytraCrashListener
+ * @see ElytraImpactListener
  */
 public class ElytraCap extends SlimefunArmorPiece implements DamageableItem, ProtectiveArmor {
 
@@ -41,10 +43,15 @@ public class ElytraCap extends SlimefunArmorPiece implements DamageableItem, Pro
     }
 
     @Override
-    public void damageItem(Player p, ItemStack item) {
+    public void damageItem(@Nonnull Player p, @Nullable ItemStack item) {
         if (p.getGameMode() != GameMode.CREATIVE) {
             DamageableItem.super.damageItem(p, item);
         }
+    }
+
+    @Override
+    public boolean evaluateUnbreakingEnchantment(int unbreakingLevel) {
+        return UnbreakingAlgorithm.ARMOR.evaluate(unbreakingLevel);
     }
 
     @Nonnull

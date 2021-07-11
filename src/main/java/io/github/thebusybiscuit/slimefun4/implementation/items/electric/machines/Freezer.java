@@ -14,7 +14,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
-public abstract class Freezer extends AContainer implements RecipeDisplayItem {
+public class Freezer extends AContainer implements RecipeDisplayItem {
 
     public Freezer(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
@@ -28,6 +28,8 @@ public abstract class Freezer extends AContainer implements RecipeDisplayItem {
         registerRecipe(6, new ItemStack[] { new ItemStack(Material.PACKED_ICE) }, new ItemStack[] { new ItemStack(Material.BLUE_ICE) });
         registerRecipe(8, new ItemStack[] { new ItemStack(Material.BLUE_ICE) }, new ItemStack[] { SlimefunItems.REACTOR_COOLANT_CELL });
         registerRecipe(6, new ItemStack[] { new ItemStack(Material.SNOW_BLOCK, 2) }, new ItemStack[] { new ItemStack(Material.ICE) });
+        registerRecipe(6, new ItemStack[] { new ItemStack(Material.MAGMA_CREAM) }, new ItemStack[] { new ItemStack(Material.SLIME_BALL) });
+        registerRecipe(6, new ItemStack[] { new ItemStack(Material.MAGMA_BLOCK, 2) }, new ItemStack[] { new ItemStack(Material.SLIME_BLOCK) });
     }
 
     @Override
@@ -50,11 +52,6 @@ public abstract class Freezer extends AContainer implements RecipeDisplayItem {
     @Override
     public String getMachineIdentifier() {
         return "FREEZER";
-    }
-
-    @Override
-    public int getCapacity() {
-        return 256;
     }
 
 }

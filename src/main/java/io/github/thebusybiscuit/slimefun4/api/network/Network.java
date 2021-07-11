@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,10 +12,10 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Particle.DustOptions;
+import org.bukkit.World;
 
+import io.github.thebusybiscuit.cscorelib2.blocks.BlockPosition;
 import io.github.thebusybiscuit.slimefun4.core.networks.NetworkManager;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListener;
@@ -23,6 +24,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListen
  * An abstract Network class to manage networks in a stateful way
  * 
  * @author meiamsome
+ * @author TheBusyBiscuit
  * 
  * @see NetworkListener
  * @see NetworkManager
@@ -30,11 +32,29 @@ import io.github.thebusybiscuit.slimefun4.implementation.listeners.NetworkListen
  */
 public abstract class Network {
 
+    /**
+     * Our {@link NetworkManager} instance.
+     */
     private final NetworkManager manager;
-    protected Location regulator;
-    private final Queue<Location> nodeQueue = new ArrayDeque<>();
 
-    protected final Set<Location> connectedLocations = new HashSet<>();
+    /**
+     * The {@link Location} of the regulator of this {@link Network}.
+     */
+    protected Location regulator;
+
+    /**
+     * The {@link UUID} of the {@link World} this {@link Network} exists within.
+     */
+    private final UUID worldId;
+
+    /**
+     * This {@link Set} holds all {@link Network} positions that are part of this {@link Network}.
+     * The {@link World} should be equal for all positions, therefore we can save memory by simply
+     * storing {@link BlockPosition#getAsLong(int, int, int)}.
+     */
+    private final Set<Long> positions = new HashSet<>();
+
+    private final Queue<Location> nodeQueue = new ArrayDeque<>();
     protected final Set<Location> regulatorNodes = new HashSet<>();
     protected final Set<Location> connectorNodes = new HashSet<>();
     protected final Set<Location> terminusNodes = new HashSet<>();
@@ -53,8 +73,9 @@ public abstract class Network {
 
         this.manager = manager;
         this.regulator = regulator;
+        this.worldId = regulator.getWorld().getUID();
 
-        connectedLocations.add(regulator);
+        positions.add(BlockPosition.getAsLong(regulator));
         nodeQueue.add(regulator.clone());
     }
 
@@ -75,10 +96,10 @@ public abstract class Network {
      * 
      * @param l
      *            The {@link Location} to classify
+     * 
      * @return The assigned type of {@link NetworkComponent} for this {@link Location}
      */
-    @Nullable
-    public abstract NetworkComponent classifyLocation(@Nonnull Location l);
+    public abstract @Nullable NetworkComponent classifyLocation(@Nonnull Location l);
 
     /**
      * This method is called whenever a {@link Location} in this {@link Network} changes
@@ -103,13 +124,19 @@ public abstract class Network {
         return regulatorNodes.size() + connectorNodes.size() + terminusNodes.size();
     }
 
+    /**
+     * This method adds the given {@link Location} to this {@link Network}.
+     * 
+     * @param l
+     *            The {@link Location} to add
+     */
     protected void addLocationToNetwork(@Nonnull Location l) {
-        if (connectedLocations.contains(l)) {
-            return;
-        }
+        Validate.notNull(l, "You cannot add a Location to a Network which is null!");
+        Validate.isTrue(l.getWorld().getUID().equals(worldId), "Networks cannot exist in multiple worlds!");
 
-        connectedLocations.add(l.clone());
-        markDirty(l);
+        if (positions.add(BlockPosition.getAsLong(l))) {
+            markDirty(l);
+        }
     }
 
     /**
@@ -132,14 +159,22 @@ public abstract class Network {
      * 
      * @param l
      *            The {@link Location} to check for
+     * 
      * @return Whether the given {@link Location} is part of this {@link Network}
      */
     public boolean connectsTo(@Nonnull Location l) {
-        return connectedLocations.contains(l);
+        Validate.notNull(l, "The Location cannot be null.");
+
+        if (this.regulator.equals(l)) {
+            return true;
+        } else if (!l.getWorld().getUID().equals(this.worldId)) {
+            return false;
+        } else {
+            return positions.contains(BlockPosition.getAsLong(l));
+        }
     }
 
-    @Nullable
-    private NetworkComponent getCurrentClassification(@Nonnull Location l) {
+    private @Nullable NetworkComponent getCurrentClassification(@Nonnull Location l) {
         if (regulatorNodes.contains(l)) {
             return NetworkComponent.REGULATOR;
         } else if (connectorNodes.contains(l)) {
@@ -211,17 +246,10 @@ public abstract class Network {
      * every {@link Location} that this {@link Network} is connected to.
      */
     public void display() {
-        SlimefunPlugin.runSync(() -> {
-            DustOptions options = new DustOptions(Color.BLUE, 3F);
-
-            for (Location l : connectedLocations) {
-                Material type = l.getBlock().getType();
-
-                if (type == Material.PLAYER_HEAD || type == Material.PLAYER_WALL_HEAD) {
-                    l.getWorld().spawnParticle(Particle.REDSTONE, l.getX() + 0.5, l.getY() + 0.5, l.getZ() + 0.5, 1, 0, 0, 0, 1, options);
-                }
-            }
-        });
+        if (manager.isVisualizerEnabled()) {
+            // TODO: Make Color configurable / network-dependent
+            SlimefunPlugin.runSync(new NetworkVisualizer(this, Color.BLUE));
+        }
     }
 
     /**
@@ -229,11 +257,14 @@ public abstract class Network {
      * 
      * @return The {@link Location} of our regulator
      */
-    @Nonnull
-    public Location getRegulator() {
+    public @Nonnull Location getRegulator() {
         return regulator;
     }
 
+    /**
+     * This method updates this {@link Network} and serves as the starting point
+     * for any running operations.
+     */
     public void tick() {
         discoverStep();
     }

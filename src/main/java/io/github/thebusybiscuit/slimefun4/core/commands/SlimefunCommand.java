@@ -54,8 +54,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
         commands.addAll(SlimefunSubCommands.getAllCommands(this));
     }
 
-    @Nonnull
-    public SlimefunPlugin getPlugin() {
+    public @Nonnull SlimefunPlugin getPlugin() {
         return plugin;
     }
 
@@ -64,8 +63,7 @@ public class SlimefunCommand implements CommandExecutor, Listener {
      * 
      * @return A {@link Map} holding the amount of times each command was run
      */
-    @Nonnull
-    public Map<SubCommand, Integer> getCommandUsage() {
+    public @Nonnull Map<SubCommand, Integer> getCommandUsage() {
         return commandUsage;
     }
 
@@ -83,9 +81,12 @@ public class SlimefunCommand implements CommandExecutor, Listener {
 
         sendHelp(sender);
 
-        // We could just return true here, but if there's no subcommands, then
-        // something went horribly wrong anyway. This will also stop sonarcloud
-        // from nagging about this always returning true...
+        /*
+         * We could just return true here, but if there's no subcommands,
+         * then something went horribly wrong anyway.
+         * This will also stop sonarcloud from nagging about
+         * this always returning true...
+         */
         return !commands.isEmpty();
     }
 
@@ -114,9 +115,12 @@ public class SlimefunCommand implements CommandExecutor, Listener {
      * 
      * @return A {@link List} containing every {@link SubCommand}
      */
-    @Nonnull
-    public List<String> getSubCommandNames() {
-        return commands.stream().map(SubCommand::getName).collect(Collectors.toList());
+    public @Nonnull List<String> getSubCommandNames() {
+        // @formatter:off
+        return commands.stream()
+                .map(SubCommand::getName)
+                .collect(Collectors.toList());
+        // @formatter:on
     }
 
 }

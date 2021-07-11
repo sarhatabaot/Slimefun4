@@ -7,10 +7,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 
 /**
  * This variation of {@link ItemSetting} allows you to allow {@link Enum} constants to be
  * used for {@link ItemSetting} validation.
+ * 
+ * @param <T>
+ *            The {@link Enum} type
  * 
  * @author TheBusyBiscuit
  * 
@@ -22,8 +26,8 @@ public class EnumSetting<T extends Enum<T>> extends ItemSetting<String> {
     private final Class<T> enumClass;
 
     @ParametersAreNonnullByDefault
-    public EnumSetting(String key, Class<T> enumClass, T defaultValue) {
-        super(key, defaultValue.name());
+    public EnumSetting(SlimefunItem item, String key, Class<T> enumClass, T defaultValue) {
+        super(item, key, defaultValue.name());
 
         this.enumClass = enumClass;
     }
@@ -41,6 +45,7 @@ public class EnumSetting<T extends Enum<T>> extends ItemSetting<String> {
      * 
      * @return An array of allowed {@link Enum} constants
      */
+    @Nonnull
     public T[] getAllowedValues() {
         return enumClass.getEnumConstants();
     }
@@ -50,6 +55,7 @@ public class EnumSetting<T extends Enum<T>> extends ItemSetting<String> {
      * 
      * @return The value as an {@link Enum} constant
      */
+    @Nonnull
     public T getAsEnumConstant() {
         return Enum.valueOf(enumClass, getValue());
     }

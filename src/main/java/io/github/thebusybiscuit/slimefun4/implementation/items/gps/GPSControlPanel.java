@@ -19,6 +19,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 public class GPSControlPanel extends SimpleSlimefunItem<BlockUseHandler> {
 
+    @ParametersAreNonnullByDefault
     public GPSControlPanel(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
     }
@@ -43,6 +44,6 @@ public class GPSControlPanel extends SimpleSlimefunItem<BlockUseHandler> {
 
     @ParametersAreNonnullByDefault
     private boolean hasAccess(Player p, Location l) {
-        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, l, ProtectableAction.ACCESS_INVENTORIES));
+        return p.hasPermission("slimefun.gps.bypass") || (SlimefunPlugin.getProtectionManager().hasPermission(p, l, ProtectableAction.INTERACT_BLOCK));
     }
 }

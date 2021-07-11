@@ -34,7 +34,10 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
  * To ensure that the console doesn't get too spammy, we destroy the block and generate
  * an {@link ErrorReport} instead.
  * Error reports get saved in the plugin folder.
- * 
+ *
+ * @param <T>
+ *            The type of {@link Throwable} which has spawned this {@link ErrorReport}
+ *
  * @author TheBusyBiscuit
  *
  */
@@ -43,10 +46,23 @@ public class ErrorReport<T extends Throwable> {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm", Locale.ROOT);
     private static final AtomicInteger count = new AtomicInteger(0);
 
-    private SlimefunAddon addon;
-    private T throwable;
+    private final SlimefunAddon addon;
+    private final T throwable;
+
     private File file;
 
+    /**
+     * This is the base constructor for an {@link ErrorReport}. It will only
+     * print the necessary info and provides a {@link Consumer} for any more detailed
+     * needs.
+     *
+     * @param throwable
+     *            The {@link Throwable} which caused this {@link ErrorReport}.
+     * @param addon
+     *            The {@link SlimefunAddon} responsible.
+     * @param printer
+     *            A custom {@link Consumer} to add more details.
+     */
     @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, SlimefunAddon addon, Consumer<PrintStream> printer) {
         this.throwable = throwable;
@@ -55,6 +71,17 @@ public class ErrorReport<T extends Throwable> {
         SlimefunPlugin.runSync(() -> print(printer));
     }
 
+    /**
+     * This constructs a new {@link ErrorReport} for the given {@link Location} and
+     * {@link SlimefunItem}.
+     *
+     * @param throwable
+     *            The {@link Throwable} which caused this {@link ErrorReport}.
+     * @param l
+     *            The {@link Location} at which the error was thrown.
+     * @param item
+     *            The {@link SlimefunItem} responsible.
+     */
     @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, Location l, SlimefunItem item) {
         this(throwable, item.getAddon(), stream -> {
@@ -88,6 +115,14 @@ public class ErrorReport<T extends Throwable> {
         });
     }
 
+    /**
+     * This constructs a new {@link ErrorReport} for the given {@link SlimefunItem}.
+     *
+     * @param throwable
+     *            The {@link Throwable} which caused this {@link ErrorReport}.
+     * @param item
+     *            The {@link SlimefunItem} responsible.
+     */
     @ParametersAreNonnullByDefault
     public ErrorReport(T throwable, SlimefunItem item) {
         this(throwable, item.getAddon(), stream -> {
@@ -100,27 +135,25 @@ public class ErrorReport<T extends Throwable> {
 
     /**
      * This method returns the {@link File} this {@link ErrorReport} has been written to.
-     * 
+     *
      * @return The {@link File} for this {@link ErrorReport}
      */
-    @Nonnull
-    public File getFile() {
+    public @Nonnull File getFile() {
         return file;
     }
 
     /**
      * This returns the {@link Throwable} that was thrown.
-     * 
+     *
      * @return The {@link Throwable}
      */
-    @Nonnull
-    public T getThrown() {
+    public @Nonnull T getThrown() {
         return throwable;
     }
 
     /**
      * This method returns the amount of {@link ErrorReport ErrorReports} created in this session.
-     * 
+     *
      * @return The amount of {@link ErrorReport ErrorReports} created.
      */
     public static int count() {
@@ -132,6 +165,9 @@ public class ErrorReport<T extends Throwable> {
         count.incrementAndGet();
 
         try (PrintStream stream = new PrintStream(file, StandardCharsets.UTF_8.name())) {
+            stream.println();
+
+            stream.println("Error Generated: " + dateFormat.format(LocalDateTime.now()));
             stream.println();
 
             stream.println("Java Environment:");
@@ -146,7 +182,6 @@ public class ErrorReport<T extends Throwable> {
             stream.println();
 
             stream.println("Slimefun Environment:");
-            stream.println("  CS-CoreLib v" + SlimefunPlugin.getCSCoreLibVersion());
             stream.println("  Slimefun v" + SlimefunPlugin.getVersion());
             stream.println("  Caused by: " + addon.getName() + " v" + addon.getPluginVersion());
             stream.println();
@@ -207,8 +242,7 @@ public class ErrorReport<T extends Throwable> {
         }
     }
 
-    @Nonnull
-    private static File getNewFile() {
+    private static @Nonnull File getNewFile() {
         String path = "plugins/Slimefun/error-reports/" + dateFormat.format(LocalDateTime.now());
         File newFile = new File(path + ".err");
 
@@ -222,6 +256,16 @@ public class ErrorReport<T extends Throwable> {
         return newFile;
     }
 
+    /**
+     * This helper method wraps the given {@link Runnable} into a try-catch block.
+     * When an {@link Exception} occurs, a new {@link ErrorReport} will be generated using
+     * the provided {@link Function}.
+     *
+     * @param function
+     *            The {@link Function} to generate a new {@link ErrorReport}
+     * @param runnable
+     *            The code to execute
+     */
     public static void tryCatch(@Nonnull Function<Exception, ErrorReport<Exception>> function, @Nonnull Runnable runnable) {
         try {
             runnable.run();

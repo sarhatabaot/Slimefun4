@@ -9,6 +9,10 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -28,6 +32,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.altar.AncientAlta
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
+// This class will be reworked and relocated in the "Recipe Rewrite"
 public class RecipeType implements Keyed {
 
     public static final RecipeType MULTIBLOCK = new RecipeType(new NamespacedKey(SlimefunPlugin.instance(), "multiblock"), new CustomItem(Material.BRICKS, "&bMultiBlock", "", "&a&oBuild it in the World"));
@@ -125,11 +130,11 @@ public class RecipeType implements Keyed {
         }
     }
 
-    public ItemStack toItem() {
+    public @Nullable ItemStack toItem() {
         return this.item;
     }
 
-    public ItemStack getItem(Player p) {
+    public @Nonnull ItemStack getItem(Player p) {
         return SlimefunPlugin.getLocalization().getRecipeTypeItem(p, this);
     }
 
@@ -138,16 +143,32 @@ public class RecipeType implements Keyed {
     }
 
     @Override
-    public NamespacedKey getKey() {
+    public final @Nonnull NamespacedKey getKey() {
         return key;
     }
 
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj instanceof RecipeType) {
+            return ((RecipeType) obj).getKey().equals(this.getKey());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public final int hashCode() {
+        return getKey().hashCode();
+    }
+
+    @ParametersAreNonnullByDefault
     private static void registerBarterDrop(ItemStack[] recipe, ItemStack output) {
         if (SlimefunPlugin.getMinecraftVersion().isAtLeast(MinecraftVersion.MINECRAFT_1_16)) {
             SlimefunPlugin.getRegistry().getBarteringDrops().add(output);
         }
     }
 
+    @ParametersAreNonnullByDefault
     private static void registerMobDrop(ItemStack[] recipe, ItemStack output) {
         String mob = ChatColor.stripColor(recipe[4].getItemMeta().getDisplayName()).toUpperCase(Locale.ROOT).replace(' ', '_');
         EntityType entity = EntityType.valueOf(mob);

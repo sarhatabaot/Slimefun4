@@ -18,10 +18,10 @@ import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 
+// This class will be deprecated, relocated and rewritten in a future version.
 public class DirtyChestMenu extends ChestMenu {
 
     protected final BlockMenuPreset preset;
-    protected ItemManipulationEvent event;
     protected int changes = 1;
 
     public DirtyChestMenu(@Nonnull BlockMenuPreset preset) {
@@ -61,44 +61,44 @@ public class DirtyChestMenu extends ChestMenu {
         return preset.canOpen(b, p);
     }
 
+    @Override
+    public void open(Player... players) {
+        super.open(players);
+
+        // The Inventory will likely be modified soon
+        markDirty();
+    }
+
     public void close() {
         for (HumanEntity human : new ArrayList<>(toInventory().getViewers())) {
             human.closeInventory();
         }
     }
 
-    /**
-     * This method has been deprecated.
-     * 
-     * @deprecated The {@link ItemManipulationEvent} has been deprecated.
-     * 
-     * @param event
-     *            deprecated class
-     */
-    @Deprecated
-    public void registerEvent(ItemManipulationEvent event) {
-        this.event = event;
-    }
-
-    @Override
-    public ChestMenu addMenuOpeningHandler(MenuOpeningHandler handler) {
-        if (handler instanceof MenuSavingHandler) {
-            MenuOpeningHandler openingHandler = ((MenuSavingHandler) handler).getOpeningHandler();
-            return super.addMenuOpeningHandler(new MenuSavingHandler(this, openingHandler));
-        } else {
-            return super.addMenuOpeningHandler(new MenuSavingHandler(this, handler));
-        }
-    }
-
     public boolean fits(@Nonnull ItemStack item, int... slots) {
-        if (getItemInSlot(slots[0]) == null) {
-            // Very small optimization
-            return true;
-        } else {
-            return InvUtils.fits(toInventory(), new ItemStackWrapper(item), slots);
+        for (int slot : slots) {
+            // A small optimization for empty slots
+            if (getItemInSlot(slot) == null) {
+                return true;
+            }
         }
+
+        return InvUtils.fits(toInventory(), ItemStackWrapper.wrap(item), slots);
     }
 
+    /**
+     * Adds given {@link ItemStack} to any of the given inventory slots.
+     * Items will be added to the inventory slots based on their order in the function argument.
+     * Items will be added either to any empty inventory slots or any partially filled slots, in which case
+     * as many items as can fit will be added to that specific spot.
+     *
+     * @param item
+     *            {@link ItemStack} to be added to the inventory
+     * @param slots
+     *            Numbers of slots to add the {@link ItemStack} to
+     * @return {@link ItemStack} with any items that did not fit into the inventory
+     *         or null when everything had fit
+     */
     @Nullable
     public ItemStack pushItem(ItemStack item, int... slots) {
         if (item == null || item.getType() == Material.AIR) {
@@ -118,15 +118,18 @@ public class DirtyChestMenu extends ChestMenu {
             if (stack == null) {
                 replaceExistingItem(slot, item);
                 return null;
-            } else if (stack.getAmount() < stack.getMaxStackSize()) {
-                if (wrapper == null) {
-                    wrapper = new ItemStackWrapper(item);
-                }
+            } else {
+                int maxStackSize = Math.min(stack.getMaxStackSize(), toInventory().getMaxStackSize());
+                if (stack.getAmount() < maxStackSize) {
+                    if (wrapper == null) {
+                        wrapper = ItemStackWrapper.wrap(item);
+                    }
 
-                if (ItemUtils.canStack(wrapper, stack)) {
-                    amount -= (stack.getMaxStackSize() - stack.getAmount());
-                    stack.setAmount(Math.min(stack.getAmount() + item.getAmount(), stack.getMaxStackSize()));
-                    item.setAmount(amount);
+                    if (ItemUtils.canStack(wrapper, stack)) {
+                        amount -= (maxStackSize - stack.getAmount());
+                        stack.setAmount(Math.min(stack.getAmount() + item.getAmount(), maxStackSize));
+                        item.setAmount(amount);
+                    }
                 }
             }
         }
@@ -159,11 +162,6 @@ public class DirtyChestMenu extends ChestMenu {
     public void replaceExistingItem(int slot, ItemStack item, boolean event) {
         if (event) {
             ItemStack previous = getItemInSlot(slot);
-
-            if (this.event != null) {
-                item = this.event.onEvent(slot, previous, item);
-            }
-
             item = preset.onItemStackChange(this, slot, previous, item);
         }
 

@@ -6,19 +6,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONException;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 /**
  * The {@link GitHubConnector} is used to connect to the GitHub API service.
@@ -31,22 +32,49 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
 abstract class GitHubConnector {
 
     private static final String API_URL = "https://api.github.com/";
+    private static final String USER_AGENT = "Slimefun4 (https://github.com/Slimefun)";
 
-    protected File file;
-    protected String repository;
     protected final GitHubService github;
+    private final String url;
+    private File file;
 
-    @ParametersAreNonnullByDefault
-    public GitHubConnector(GitHubService github, String repository) {
+    /**
+     * This creates a new {@link GitHubConnector} for the given repository.
+     * 
+     * @param github
+     *            Our instance of {@link GitHubService}
+     * @param repository
+     *            The repository we want to connect to
+     */
+    GitHubConnector(@Nonnull GitHubService github, @Nonnull String repository) {
         this.github = github;
-        this.repository = repository;
+        this.url = API_URL + "repos/" + repository + getEndpoint();
     }
 
+    /**
+     * This returns the name of our cache {@link File}.
+     * 
+     * @return The cache {@link File} name
+     */
     @Nonnull
     public abstract String getFileName();
 
+    /**
+     * This is our {@link URL} endpoint.
+     * It is the suffix of the {@link URL} we want to connect to.
+     * 
+     * @return Our endpoint
+     */
     @Nonnull
-    public abstract String getURLSuffix();
+    public abstract String getEndpoint();
+
+    /**
+     * This {@link Map} contains the query parameters for our {@link URL}.
+     * 
+     * @return A {@link Map} with our query parameters
+     */
+    @Nonnull
+    public abstract Map<String, Object> getParameters();
 
     /**
      * This method is called when the connection finished successfully.
@@ -63,24 +91,32 @@ abstract class GitHubConnector {
         // Don't do anything by default
     }
 
-    public void pullFile() {
+    /**
+     * This method will connect to GitHub and store the received data inside a local
+     * cache {@link File}.
+     * Make sure to call this method asynchronously!
+     */
+    void download() {
         file = new File("plugins/Slimefun/cache/github/" + getFileName() + ".json");
 
         if (github.isLoggingEnabled()) {
-            Slimefun.getLogger().log(Level.INFO, "Retrieving {0}.json from GitHub...", getFileName());
+            SlimefunPlugin.logger().log(Level.INFO, "Retrieving {0}.json from GitHub...", getFileName());
         }
 
         try {
-            HttpResponse<JsonNode> resp = Unirest.get(API_URL + "repos/" + repository + getURLSuffix())
-                    .header("User-Agent", "Slimefun4 (https://github.com/Slimefun)")
+            // @formatter:off
+            HttpResponse<JsonNode> response = Unirest.get(url)
+                    .queryString(getParameters())
+                    .header("User-Agent", USER_AGENT)
                     .asJson();
+            // @formatter:on
 
-            if (resp.isSuccess()) {
-                onSuccess(resp.getBody());
-                writeCacheFile(resp.getBody());
+            if (response.isSuccess()) {
+                onSuccess(response.getBody());
+                writeCacheFile(response.getBody());
             } else {
                 if (github.isLoggingEnabled()) {
-                    Slimefun.getLogger().log(Level.WARNING, "Failed to fetch {0}: {1} - {2}", new Object[] { repository + getURLSuffix(), resp.getStatus(), resp.getBody() });
+                    SlimefunPlugin.logger().log(Level.WARNING, "Failed to fetch {0}: {1} - {2}", new Object[] { url, response.getStatus(), response.getBody() });
                 }
 
                 // It has the cached file, let's just read that then
@@ -94,7 +130,7 @@ abstract class GitHubConnector {
             }
         } catch (UnirestException e) {
             if (github.isLoggingEnabled()) {
-                Slimefun.getLogger().log(Level.WARNING, "Could not connect to GitHub in time.", e);
+                SlimefunPlugin.logger().log(Level.WARNING, "Could not connect to GitHub in time.", e);
             }
 
             // It has the cached file, let's just read that then
@@ -117,7 +153,7 @@ abstract class GitHubConnector {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             return new JsonNode(reader.readLine());
         } catch (IOException | JSONException e) {
-            Slimefun.getLogger().log(Level.WARNING, "Failed to read Github cache file: {0} - {1}: {2}", new Object[] { file.getName(), e.getClass().getSimpleName(), e.getMessage() });
+            SlimefunPlugin.logger().log(Level.WARNING, "Failed to read Github cache file: {0} - {1}: {2}", new Object[] { file.getName(), e.getClass().getSimpleName(), e.getMessage() });
             return null;
         }
     }
@@ -126,7 +162,7 @@ abstract class GitHubConnector {
         try (FileOutputStream output = new FileOutputStream(file)) {
             output.write(node.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            Slimefun.getLogger().log(Level.WARNING, "Failed to populate GitHub cache: {0} - {1}", new Object[] { e.getClass().getSimpleName(), e.getMessage() });
+            SlimefunPlugin.logger().log(Level.WARNING, "Failed to populate GitHub cache: {0} - {1}", new Object[] { e.getClass().getSimpleName(), e.getMessage() });
         }
     }
 }

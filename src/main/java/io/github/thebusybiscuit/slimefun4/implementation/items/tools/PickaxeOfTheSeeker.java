@@ -17,6 +17,7 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
+
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
@@ -29,7 +30,7 @@ import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
  */
 public class PickaxeOfTheSeeker extends SimpleSlimefunItem<ItemUseHandler> implements DamageableItem {
 
-    private final ItemSetting<Integer> maxRange = new IntRangeSetting("max-range", 1, 5, Integer.MAX_VALUE);
+    private final ItemSetting<Integer> maxRange = new IntRangeSetting(this, "max-range", 1, 5, Integer.MAX_VALUE);
 
     @ParametersAreNonnullByDefault
     public PickaxeOfTheSeeker(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -39,7 +40,7 @@ public class PickaxeOfTheSeeker extends SimpleSlimefunItem<ItemUseHandler> imple
     }
 
     @Override
-    public ItemUseHandler getItemHandler() {
+    public @Nonnull ItemUseHandler getItemHandler() {
         return e -> {
             Player p = e.getPlayer();
             Block closest = findClosestOre(p);
@@ -47,7 +48,7 @@ public class PickaxeOfTheSeeker extends SimpleSlimefunItem<ItemUseHandler> imple
             e.setUseBlock(Result.DENY);
 
             if (closest == null) {
-                SlimefunPlugin.getLocalization().sendMessage(p, "miner.no-ores");
+                SlimefunPlugin.getLocalization().sendMessage(p, "messages.pickaxe-of-the-seeker.no-ores");
             } else {
                 double l = closest.getX() + 0.5 - p.getLocation().getX();
                 double w = closest.getZ() + 0.5 - p.getLocation().getZ();
@@ -69,8 +70,7 @@ public class PickaxeOfTheSeeker extends SimpleSlimefunItem<ItemUseHandler> imple
         };
     }
 
-    @Nullable
-    private Block findClosestOre(@Nonnull Player p) {
+    private @Nullable Block findClosestOre(@Nonnull Player p) {
         Block start = p.getLocation().getBlock();
         Block closest = null;
         double lastDistance = Double.MAX_VALUE;

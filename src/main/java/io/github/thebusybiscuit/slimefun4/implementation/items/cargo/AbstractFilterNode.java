@@ -1,11 +1,19 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.cargo;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.networks.cargo.CargoNet;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -29,20 +37,34 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
     private static final String FILTER_TYPE = "filter-type";
     private static final String FILTER_LORE = "filter-lore";
 
-    public AbstractFilterNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack recipeOutput) {
+    @ParametersAreNonnullByDefault
+    protected AbstractFilterNode(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, @Nullable ItemStack recipeOutput) {
         super(category, item, recipeType, recipe, recipeOutput);
 
-        registerBlockHandler(getId(), (p, b, stack, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
-
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), SLOTS);
-            }
-
-            return true;
-        });
+        addItemHandler(onBreak());
     }
 
+    @Override
+    public boolean hasItemFilter() {
+        return true;
+    }
+
+    @Nonnull
+    private BlockBreakHandler onBreak() {
+        return new SimpleBlockBreakHandler() {
+
+            @Override
+            public void onBlockBreak(@Nonnull Block b) {
+                BlockMenu inv = BlockStorage.getInventory(b);
+
+                if (inv != null) {
+                    inv.dropItems(b.getLocation(), SLOTS);
+                }
+            }
+        };
+    }
+
+    @Nonnull
     protected abstract int[] getBorder();
 
     @Override
@@ -65,7 +87,8 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
 
     @Override
     protected void updateBlockMenu(BlockMenu menu, Block b) {
-        String filterType = BlockStorage.getLocationInfo(b.getLocation(), FILTER_TYPE);
+        Location loc = b.getLocation();
+        String filterType = BlockStorage.getLocationInfo(loc, FILTER_TYPE);
 
         if (!BlockStorage.hasBlockInfo(b) || filterType == null || filterType.equals("whitelist")) {
             menu.replaceExistingItem(15, new CustomItem(Material.WHITE_WOOL, "&7Type: &rWhitelist", "", "&e> Click to change it to Blacklist"));
@@ -102,6 +125,16 @@ abstract class AbstractFilterNode extends AbstractCargoNode {
         }
 
         addChannelSelector(b, menu, 41, 42, 43);
+        markDirty(loc);
+    }
+
+    @Override
+    protected void markDirty(@Nonnull Location loc) {
+        CargoNet network = CargoNet.getNetworkFromLocation(loc);
+
+        if (network != null) {
+            network.markCargoNodeConfigurationDirty(loc);
+        }
     }
 
 }

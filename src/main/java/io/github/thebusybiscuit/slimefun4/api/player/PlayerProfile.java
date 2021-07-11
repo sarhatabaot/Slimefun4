@@ -1,6 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.api.player;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +32,7 @@ import com.google.common.collect.ImmutableSet;
 
 import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
 import io.github.thebusybiscuit.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.api.events.AsyncProfileLoadEvent;
 import io.github.thebusybiscuit.slimefun4.api.gps.Waypoint;
 import io.github.thebusybiscuit.slimefun4.api.items.HashedArmorpiece;
 import io.github.thebusybiscuit.slimefun4.core.attributes.ProtectionType;
@@ -43,7 +43,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.implementation.items.armor.SlimefunArmorPiece;
 import io.github.thebusybiscuit.slimefun4.utils.NumberUtils;
 import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 /**
  * A class that can store a Player's {@link Research} progress for caching purposes.
@@ -57,7 +56,7 @@ import me.mrCookieSlime.Slimefun.api.Slimefun;
  * @see HashedArmorpiece
  *
  */
-public final class PlayerProfile {
+public class PlayerProfile {
 
     private final UUID uuid;
     private final String name;
@@ -75,13 +74,17 @@ public final class PlayerProfile {
 
     private final HashedArmorpiece[] armor = { new HashedArmorpiece(), new HashedArmorpiece(), new HashedArmorpiece(), new HashedArmorpiece() };
 
-    private PlayerProfile(@Nonnull OfflinePlayer p) {
+    protected PlayerProfile(@Nonnull OfflinePlayer p) {
         this.uuid = p.getUniqueId();
         this.name = p.getName();
 
-        configFile = new Config(new File("data-storage/Slimefun/Players/" + uuid.toString() + ".yml"));
+        configFile = new Config("data-storage/Slimefun/Players/" + uuid.toString() + ".yml");
         waypointsFile = new Config("data-storage/Slimefun/waypoints/" + uuid.toString() + ".yml");
 
+        loadProfileData();
+    }
+
+    private void loadProfileData() {
         for (Research research : SlimefunPlugin.getRegistry().getResearches()) {
             if (configFile.contains("researches." + research.getID())) {
                 researches.add(research);
@@ -96,7 +99,7 @@ public final class PlayerProfile {
                     waypoints.add(new Waypoint(this, key, loc, waypointName));
                 }
             } catch (Exception x) {
-                Slimefun.getLogger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + p.getName() + '"');
+                SlimefunPlugin.logger().log(Level.WARNING, x, () -> "Could not load Waypoint \"" + key + "\" for Player \"" + name + '"');
             }
         }
     }
@@ -107,8 +110,7 @@ public final class PlayerProfile {
      * 
      * @return The cached armor for this {@link Player}
      */
-    @Nonnull
-    public HashedArmorpiece[] getArmor() {
+    public @Nonnull HashedArmorpiece[] getArmor() {
         return armor;
     }
 
@@ -118,8 +120,7 @@ public final class PlayerProfile {
      * 
      * @return The {@link Config} associated with this {@link PlayerProfile}
      */
-    @Nonnull
-    public Config getConfig() {
+    public @Nonnull Config getConfig() {
         return configFile;
     }
 
@@ -128,8 +129,7 @@ public final class PlayerProfile {
      * 
      * @return The {@link UUID} of our {@link PlayerProfile}
      */
-    @Nonnull
-    public UUID getUUID() {
+    public @Nonnull UUID getUUID() {
         return uuid;
     }
 
@@ -208,8 +208,7 @@ public final class PlayerProfile {
      * 
      * @return A {@code Hashset<Research>} of all Researches this {@link Player} has unlocked
      */
-    @Nonnull
-    public Set<Research> getResearches() {
+    public @Nonnull Set<Research> getResearches() {
         return ImmutableSet.copyOf(researches);
     }
 
@@ -219,8 +218,7 @@ public final class PlayerProfile {
      * 
      * @return A {@link List} containing every {@link Waypoint}
      */
-    @Nonnull
-    public List<Waypoint> getWaypoints() {
+    public @Nonnull List<Waypoint> getWaypoints() {
         return ImmutableList.copyOf(waypoints);
     }
 
@@ -269,19 +267,18 @@ public final class PlayerProfile {
      * Call this method if the Player has left.
      * The profile can then be removed from RAM.
      */
-    public void markForDeletion() {
+    public final void markForDeletion() {
         markedForDeletion = true;
     }
 
     /**
      * Call this method if this Profile has unsaved changes.
      */
-    public void markDirty() {
+    public final void markDirty() {
         dirty = true;
     }
 
-    @Nonnull
-    public PlayerBackpack createBackpack(int size) {
+    public @Nonnull PlayerBackpack createBackpack(int size) {
         IntStream stream = IntStream.iterate(0, i -> i + 1).filter(i -> !configFile.contains("backpacks." + i + ".size"));
         int id = stream.findFirst().getAsInt();
 
@@ -291,8 +288,7 @@ public final class PlayerProfile {
         return backpack;
     }
 
-    @Nonnull
-    public Optional<PlayerBackpack> getBackpack(int id) {
+    public @Nonnull Optional<PlayerBackpack> getBackpack(int id) {
         if (id < 0) {
             throw new IllegalArgumentException("Backpacks cannot have negative ids!");
         }
@@ -310,8 +306,7 @@ public final class PlayerProfile {
         return Optional.empty();
     }
 
-    @Nonnull
-    public String getTitle() {
+    public @Nonnull String getTitle() {
         List<String> titles = SlimefunPlugin.getRegistry().getResearchRanks();
 
         float fraction = (float) researches.size() / SlimefunPlugin.getRegistry().getResearches().size();
@@ -341,8 +336,7 @@ public final class PlayerProfile {
      * 
      * @return The {@link Player} of this {@link PlayerProfile} or null
      */
-    @Nullable
-    public Player getPlayer() {
+    public @Nullable Player getPlayer() {
         return Bukkit.getPlayer(getUUID());
     }
 
@@ -352,8 +346,7 @@ public final class PlayerProfile {
      * 
      * @return The {@link GuideHistory} of this {@link Player}
      */
-    @Nonnull
-    public GuideHistory getGuideHistory() {
+    public @Nonnull GuideHistory getGuideHistory() {
         return guideHistory;
     }
 
@@ -383,9 +376,11 @@ public final class PlayerProfile {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(SlimefunPlugin.instance(), () -> {
-            PlayerProfile pp = new PlayerProfile(p);
-            SlimefunPlugin.getRegistry().getPlayerProfiles().put(uuid, pp);
-            callback.accept(pp);
+            AsyncProfileLoadEvent event = new AsyncProfileLoadEvent(new PlayerProfile(p));
+            Bukkit.getPluginManager().callEvent(event);
+
+            SlimefunPlugin.getRegistry().getPlayerProfiles().put(uuid, event.getProfile());
+            callback.accept(event.getProfile());
         });
 
         return false;
@@ -426,13 +421,11 @@ public final class PlayerProfile {
      * 
      * @return An {@link Optional} describing the result
      */
-    @Nonnull
-    public static Optional<PlayerProfile> find(@Nonnull OfflinePlayer p) {
+    public static @Nonnull Optional<PlayerProfile> find(@Nonnull OfflinePlayer p) {
         return Optional.ofNullable(SlimefunPlugin.getRegistry().getPlayerProfiles().get(p.getUniqueId()));
     }
 
-    @Nonnull
-    public static Iterator<PlayerProfile> iterator() {
+    public static @Nonnull Iterator<PlayerProfile> iterator() {
         return SlimefunPlugin.getRegistry().getPlayerProfiles().values().iterator();
     }
 
@@ -457,15 +450,17 @@ public final class PlayerProfile {
 
         if (id.isPresent()) {
             int number = id.getAsInt();
+
             fromUUID(UUID.fromString(uuid), profile -> {
                 Optional<PlayerBackpack> backpack = profile.getBackpack(number);
-
                 backpack.ifPresent(callback);
             });
         }
     }
 
     public boolean hasFullProtectionAgainst(@Nonnull ProtectionType type) {
+        Validate.notNull(type, "ProtectionType must not be null.");
+
         int armorCount = 0;
         NamespacedKey setId = null;
 

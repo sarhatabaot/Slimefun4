@@ -1,5 +1,6 @@
 package io.github.thebusybiscuit.slimefun4.core.services.github;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +14,8 @@ import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 
 import io.github.thebusybiscuit.cscorelib2.players.MinecraftAccount;
-import io.github.thebusybiscuit.cscorelib2.players.MinecraftAccount.TooManyRequestsException;
+import io.github.thebusybiscuit.cscorelib2.players.TooManyRequestsException;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import me.mrCookieSlime.Slimefun.api.Slimefun;
 
 /**
  * This {@link GitHubTask} represents a {@link Runnable} that is run every X minutes.
@@ -38,13 +38,23 @@ class GitHubTask implements Runnable {
 
     @Override
     public void run() {
-        gitHubService.getConnectors().forEach(GitHubConnector::pullFile);
+        connectAndCache();
         grabTextures();
     }
 
+    private void connectAndCache() {
+        gitHubService.getConnectors().forEach(GitHubConnector::download);
+    }
+
+    /**
+     * This method will pull the skin textures for every {@link Contributor} and store
+     * the {@link UUID} and received skin inside a local cache {@link File}.
+     */
     private void grabTextures() {
-        // Store all queried usernames to prevent 429 responses for pinging the
-        // same URL twice in one run.
+        /**
+         * Store all queried usernames to prevent 429 responses for pinging
+         * the same URL twice in one run.
+         */
         Map<String, String> skins = new HashMap<>();
         int requests = 0;
 
@@ -68,8 +78,11 @@ class GitHubTask implements Runnable {
             }
         }
 
-        // We only wanna save this if all Connectors finished already
-        // This will run multiple times but thats okay, this way we get as much data as possible stored
+        /**
+         * We only wanna save this if all Connectors finished already.
+         * This will run multiple times but thats okay, this way we get as much
+         * data as possible stored.
+         */
         gitHubService.saveCache();
     }
 
@@ -87,8 +100,8 @@ class GitHubTask implements Runnable {
                 contributor.setTexture(null);
             } catch (IOException x) {
                 // Too many requests
-                Slimefun.getLogger().log(Level.WARNING, "Attempted to connect to mojang.com, got this response: {0}: {1}", new Object[] { x.getClass().getSimpleName(), x.getMessage() });
-                Slimefun.getLogger().log(Level.WARNING, "This usually means mojang.com is temporarily down or started to rate-limit this connection, this is not an error message!");
+                SlimefunPlugin.logger().log(Level.WARNING, "Attempted to connect to mojang.com, got this response: {0}: {1}", new Object[] { x.getClass().getSimpleName(), x.getMessage() });
+                SlimefunPlugin.logger().log(Level.WARNING, "This usually means mojang.com is temporarily down or started to rate-limit this connection, this is not an error message!");
 
                 // Retry after 5 minutes if it was rate-limiting
                 if (x.getMessage().contains("429")) {
@@ -97,7 +110,7 @@ class GitHubTask implements Runnable {
 
                 return -1;
             } catch (TooManyRequestsException x) {
-                Slimefun.getLogger().log(Level.WARNING, "Received a rate-limit from mojang.com, retrying in 4 minutes");
+                SlimefunPlugin.logger().log(Level.WARNING, "Received a rate-limit from mojang.com, retrying in 4 minutes");
                 Bukkit.getScheduler().runTaskLaterAsynchronously(SlimefunPlugin.instance(), this::grabTextures, 4 * 60 * 20L);
 
                 return -1;

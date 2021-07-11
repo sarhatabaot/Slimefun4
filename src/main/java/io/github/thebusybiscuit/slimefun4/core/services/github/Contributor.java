@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 
-import io.github.thebusybiscuit.cscorelib2.data.ComputedOptional;
+import io.github.thebusybiscuit.cscorelib2.data.TriStateOptional;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
 import io.github.thebusybiscuit.slimefun4.utils.HeadTexture;
 
@@ -35,10 +35,9 @@ public class Contributor {
     private final String profileLink;
 
     private final ConcurrentMap<String, Integer> contributions = new ConcurrentHashMap<>();
-    private final ComputedOptional<String> headTexture = ComputedOptional.createNew();
+    private final TriStateOptional<String> headTexture = TriStateOptional.createNew();
 
     private Optional<UUID> uuid = Optional.empty();
-    private boolean locked = false;
 
     /**
      * This creates a new {@link Contributor} with the given ingame name and GitHub profile.
@@ -76,7 +75,7 @@ public class Contributor {
      * specified role.
      * 
      * @param role
-     *            The role
+     *            The role of this {@link Contributor}
      * @param commits
      *            The amount of contributions made as that role
      */
@@ -84,9 +83,7 @@ public class Contributor {
         Validate.notNull(role, "The role cannot be null!");
         Validate.isTrue(commits >= 0, "Contributions cannot be negative");
 
-        if (!locked || role.startsWith("translator,")) {
-            contributions.put(role, commits);
-        }
+        contributions.put(role, commits);
     }
 
     /**
@@ -120,6 +117,13 @@ public class Contributor {
         return profileLink;
     }
 
+    /**
+     * This returns a {@link List} of contributions for this {@link Contributor}.
+     * Each entry consists of a {@link String} (for the role) and an {@link Integer}
+     * (for the amount of commits).
+     * 
+     * @return A {@link List} of contributions for this {@link Contributor}
+     */
     @Nonnull
     public List<Map.Entry<String, Integer>> getContributions() {
         List<Map.Entry<String, Integer>> list = new ArrayList<>(contributions.entrySet());
@@ -137,6 +141,8 @@ public class Contributor {
      * @return The amount of contributions this {@link Contributor} submitted as the given role
      */
     public int getContributions(@Nonnull String role) {
+        Validate.notNull(role, "The role cannot be null!");
+
         return contributions.getOrDefault(role, 0);
     }
 
@@ -170,12 +176,26 @@ public class Contributor {
      */
     @Nonnull
     public String getTexture() {
-        if (!headTexture.isComputed() || !headTexture.isPresent()) {
-            GitHubService github = SlimefunPlugin.getGitHubService();
+        return getTexture(SlimefunPlugin.getGitHubService());
+    }
 
-            if (github != null) {
-                String cached = github.getCachedTexture(githubUsername);
-                return cached != null ? cached : HeadTexture.UNKNOWN.getTexture();
+    /**
+     * Returns this contributor's head texture.
+     * If no texture could be found, or it hasn't been pulled yet,
+     * then it will return a placeholder texture.
+     * 
+     * @param github
+     *            Our {@link GitHubService} instance
+     * 
+     * @return A Base64-Head Texture
+     */
+    @Nonnull
+    protected String getTexture(@Nonnull GitHubService github) {
+        if (!headTexture.isComputed() || !headTexture.isPresent()) {
+            String cached = github.getCachedTexture(githubUsername);
+
+            if (cached != null) {
+                return cached;
             } else {
                 return HeadTexture.UNKNOWN.getTexture();
             }
@@ -214,16 +234,26 @@ public class Contributor {
         return contributions.values().stream().mapToInt(Integer::intValue).sum();
     }
 
-    public int index() {
-        return -getTotalContributions();
-    }
-
+    /**
+     * This returns the final display name for this {@link Contributor}.
+     * The display name is basically the GitHub username but if the Minecraft username differs,
+     * it will be appended in brackets behind the GitHub username.
+     * 
+     * @return The final display name of this {@link Contributor}.
+     */
     @Nonnull
     public String getDisplayName() {
         return ChatColor.GRAY + githubUsername + (!githubUsername.equals(minecraftUsername) ? ChatColor.DARK_GRAY + " (MC: " + minecraftUsername + ")" : "");
     }
 
-    public void lock() {
-        locked = true;
+    /**
+     * This returns the position on where to order this {@link Contributor}.
+     * This is just a convenience method for a {@link Comparator}, it is equivalent to
+     * {@link #getTotalContributions()} multiplied by minus one.
+     * 
+     * @return The position of this {@link Contributor} in terms for positioning and ordering.
+     */
+    public int getPosition() {
+        return -getTotalContributions();
     }
 }
